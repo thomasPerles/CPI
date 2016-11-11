@@ -11,8 +11,9 @@ import javax.imageio.ImageIO;
 import javax.swing.Box;
 import javax.swing.ImageIcon;
 
-import java.awt.BorderLayout;
 import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class MainWindow
 {
@@ -59,10 +60,6 @@ public class MainWindow
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
-		Component horizontalStrut = Box.createHorizontalStrut(20);
-		horizontalStrut.setBounds(0, 436, 969, 160);
-		frame.getContentPane().add(horizontalStrut);
-		
 		JButton btnLoadImage = new JButton("Load Image");
 		btnLoadImage.setBounds(421, 596, 115, 25);
 		frame.getContentPane().add(btnLoadImage);
@@ -75,13 +72,24 @@ public class MainWindow
 		btnDecrypt.setBounds(725, 609, 97, 25);
 		frame.getContentPane().add(btnDecrypt);
 		
-		JButton btnNewButton = new JButton();
-		try {
-		    Image img = ImageIO.read(getClass().getResource("res/select.bmp"));
-		    btnNewButton.setIcon(new ImageIcon(img));
-		  } catch (IOException ex) {
-		  }
-		btnNewButton.setBounds(83, 540, 97, 25);
-		frame.getContentPane().add(btnNewButton);
+		JButton btnNewZones = new JButton("New Zones");
+		btnNewZones.setIcon(new ImageIcon("res/select.bmp"));
+		btnNewZones.setBounds(83, 540, 121, 25);
+		frame.getContentPane().add(btnNewZones);
+		
+		JButton btnSelectAll = new JButton("Select All");
+		/*
+		btnSelectAll.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+			}
+		});
+		*/
+		btnSelectAll.setBounds(93, 621, 97, 25);
+		frame.getContentPane().add(btnSelectAll);
+		
+		JButton btnSelectZones = new JButton("Select Zones");
+		btnSelectZones.setIcon(new ImageIcon("res/select.bmp"));
+		btnSelectZones.setBounds(83, 583, 121, 25);
+		frame.getContentPane().add(btnSelectZones);
 	}
 }
