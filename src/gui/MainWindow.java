@@ -2,7 +2,10 @@ package gui;
 
 import java.awt.EventQueue;
 import java.awt.Image;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 
 import javax.swing.JFrame;
 import java.awt.Component;
@@ -12,6 +15,8 @@ import javax.swing.Box;
 import javax.swing.ImageIcon;
 
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
@@ -19,6 +24,7 @@ public class MainWindow
 {
 
 	private JFrame frame;
+	//final JFileChooser fc = new JFileChooser();
 
 	/**
 	 * Launch the application.
@@ -61,6 +67,30 @@ public class MainWindow
 		frame.getContentPane().setLayout(null);
 		
 		JButton btnLoadImage = new JButton("Load Image");
+		btnLoadImage.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+	
+				JFileChooser dialogue = new JFileChooser(new File("."));
+				PrintWriter sortie = null;
+				File fichier;
+				
+				if (dialogue.showOpenDialog(null)== 
+				    JFileChooser.APPROVE_OPTION) {
+				    fichier = dialogue.getSelectedFile();
+				    try
+					{
+						sortie = new PrintWriter
+						(new FileWriter(fichier.getPath(), true));
+					}
+					catch (IOException e)
+					{
+						e.printStackTrace();
+					}
+				    sortie.close();
+				}
+			}
+			
+		});
 		btnLoadImage.setBounds(421, 596, 115, 25);
 		frame.getContentPane().add(btnLoadImage);
 		
