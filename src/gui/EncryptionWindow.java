@@ -1,6 +1,5 @@
 package gui;
 
-import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -13,22 +12,6 @@ public class EncryptionWindow {
 
 	private JFrame frame;
 	private JTextField passwordTextField;
-
-	/**
-	 * Launch the application.
-	 */
-	/*public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					EncryptionWindow window = new EncryptionWindow();
-					window.frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}*/
 	
 	public void setVisible(boolean state) {
 		frame.setVisible(state);
@@ -78,5 +61,13 @@ public class EncryptionWindow {
 			}
 		});
 		
+		encryptButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+					// Gestion du mot de passe
+						
+			}
+		});
 	}
 }
