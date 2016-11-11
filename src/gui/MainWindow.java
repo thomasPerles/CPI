@@ -12,6 +12,7 @@ import java.awt.Component;
 
 import javax.imageio.ImageIO;
 import javax.swing.Box;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
 import javax.swing.JButton;
@@ -19,6 +20,7 @@ import javax.swing.JFileChooser;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import javax.swing.JPanel;
 
 public class MainWindow
 {
@@ -113,9 +115,13 @@ public class MainWindow
 		btnDecrypt.setBounds(725, 609, 97, 25);
 		frame.getContentPane().add(btnDecrypt);
 		
-		JButton btnNewZones = new JButton("New Zones");
-		btnNewZones.setIcon(new ImageIcon("res/select.bmp"));
-		btnNewZones.setBounds(83, 540, 121, 25);
+		Icon mousePointer = new ImageIcon("res/mouse.png");
+		JButton btnNewZones = new JButton(mousePointer);
+		btnNewZones.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		btnNewZones.setBounds(124, 540, 33, 25);
 		frame.getContentPane().add(btnNewZones);
 		
 		JButton btnSelectAll = new JButton("Select All");
@@ -128,8 +134,8 @@ public class MainWindow
 		btnSelectAll.setBounds(93, 621, 97, 25);
 		frame.getContentPane().add(btnSelectAll);
 		
-		JButton btnSelectZones = new JButton("Select Zones");
-		btnSelectZones.setIcon(new ImageIcon("res/select.bmp"));
+		Icon selectIcon = new ImageIcon("res/select.png");
+		JButton btnSelectZones = new JButton(selectIcon);
 		btnSelectZones.setBounds(83, 583, 121, 25);
 		frame.getContentPane().add(btnSelectZones);
 	}
