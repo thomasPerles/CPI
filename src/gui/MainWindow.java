@@ -65,17 +65,13 @@ public class MainWindow
 	private void allowButton(){
 		btnNewZones.setEnabled(true);
 		btnSelectZones.setEnabled(true);
-		btnSelectAll.setEnabled(true);
-		btnEncrypt.setEnabled(true);
-		
+		btnSelectAll.setEnabled(true);		
 	}
 	
 	private void disableButton(){
 		btnNewZones.setEnabled(false);
 		btnSelectZones.setEnabled(false);
 		btnSelectAll.setEnabled(false);
-		btnEncrypt.setEnabled(false);
-		
 	}
 	
 	private void updateImage(JLabel lblImage, JFrame frame, File fichier){
