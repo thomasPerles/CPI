@@ -65,8 +65,24 @@ public class MainWindow
 	 */
 	
 	private void updateImage(JLabel lblImage, JFrame frame, File fichier){
-		ImageIcon image = new ImageIcon(fichier.toString());
-		lblImage.setIcon(image);
+		ImageIcon imageIcon = new ImageIcon(fichier.toString());
+		if (imageIcon.getIconWidth() > 883){
+			float height = imageIcon.getIconHeight();
+			float width = imageIcon.getIconWidth();
+			Image image = imageIcon.getImage(); // transform it  
+			Image newimg = image.getScaledInstance(883, (int)(height*(883/width)),  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
+			imageIcon = new ImageIcon(newimg);  // transform it back
+		}
+		if (imageIcon.getIconHeight() > 439){
+			float height = imageIcon.getIconHeight();
+			float width = imageIcon.getIconWidth();
+			Image image = imageIcon.getImage(); // transform it  
+			Image newimg = image.getScaledInstance((int)(width*(439/height)), 439,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
+			imageIcon = new ImageIcon(newimg);  // transform it back
+		}
+				
+		System.out.println(imageIcon.getIconHeight()+"x"+imageIcon.getIconWidth());
+		lblImage.setIcon(imageIcon);
 		frame.repaint();
 	}
 	
@@ -78,9 +94,10 @@ public class MainWindow
 		frame.getContentPane().setLayout(null);
 
 
-        ImageIcon image = new ImageIcon("res/select.png");
+        ImageIcon image = new ImageIcon("res/bg.gif");
         JLabel lblImage = new JLabel(image);
 		lblImage.setBounds(41, 35, 883, 439);
+		lblImage.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
 		frame.getContentPane().add(lblImage);
 
 		
@@ -148,7 +165,7 @@ public class MainWindow
 			}
 		});
 		*/
-		btnSelectAll.setToolTipText("Select all zones");
+		btnSelectAll.setToolTipText("Select all image");
 		btnSelectAll.setBounds(93, 621, 97, 25);
 		frame.getContentPane().add(btnSelectAll);
 		
