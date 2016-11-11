@@ -88,17 +88,28 @@ public class MainWindow
 					}
 				    sortie.close();
 				}
-			}
-			
+			}	
 		});
 		btnLoadImage.setBounds(421, 596, 115, 25);
 		frame.getContentPane().add(btnLoadImage);
 		
 		JButton btnEncrypt = new JButton("Encrypt");
+		btnEncrypt.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				EncryptionWindow ew = new EncryptionWindow();
+				ew.setVisible(true);
+			}
+		});
 		btnEncrypt.setBounds(725, 557, 97, 25);
 		frame.getContentPane().add(btnEncrypt);
 		
 		JButton btnDecrypt = new JButton("Decrypt");
+		btnDecrypt.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				DecryptionWindow dw = new DecryptionWindow();
+				dw.setVisible(true);
+			}
+		});
 		btnDecrypt.setBounds(725, 609, 97, 25);
 		frame.getContentPane().add(btnDecrypt);
 		
