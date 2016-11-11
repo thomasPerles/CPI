@@ -10,10 +10,7 @@ import java.io.PrintWriter;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
-import java.awt.Component;
 
-import javax.imageio.ImageIO;
-import javax.swing.Box;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
@@ -22,30 +19,31 @@ import javax.swing.JFileChooser;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import javax.swing.JPanel;
+import javax.swing.JToggleButton;
 
 public class MainWindow
 {
 
 	private JFrame frame;
+	private JToggleButton btnNewZones;
+	private JToggleButton btnSelectZones;
+	private JButton btnSelectAll;
+	private JButton btnLoadImage;
+	private JButton btnEncrypt;
+	private JButton btnDecrypt;
 	//final JFileChooser fc = new JFileChooser();
 
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args)
-	{
-		EventQueue.invokeLater(new Runnable()
-		{
-			public void run()
-			{
-				try
-				{
+	public static void main(String[] args){
+		EventQueue.invokeLater(new Runnable(){
+			public void run(){
+				try{
 					MainWindow window = new MainWindow();
 					window.frame.setVisible(true);
 				}
-				catch (Exception e)
-				{
+				catch (Exception e){
 					e.printStackTrace();
 				}
 			}
@@ -55,14 +53,30 @@ public class MainWindow
 	/**
 	 * Create the application.
 	 */
-	public MainWindow()
-	{
+	public MainWindow(){
 		initialize();
 	}
 
 	/**
 	 * Initialize the contents of the frame.
 	 */
+	
+	
+	private void allowButton(){
+		btnNewZones.setEnabled(true);
+		btnSelectZones.setEnabled(true);
+		btnSelectAll.setEnabled(true);
+		btnEncrypt.setEnabled(true);
+		
+	}
+	
+	private void disableButton(){
+		btnNewZones.setEnabled(false);
+		btnSelectZones.setEnabled(false);
+		btnSelectAll.setEnabled(false);
+		btnEncrypt.setEnabled(false);
+		
+	}
 	
 	private void updateImage(JLabel lblImage, JFrame frame, File fichier){
 		ImageIcon imageIcon = new ImageIcon(fichier.toString());
@@ -80,14 +94,19 @@ public class MainWindow
 			Image newimg = image.getScaledInstance((int)(width*(439/height)), 439,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
 			imageIcon = new ImageIcon(newimg);  // transform it back
 		}
-				
-		System.out.println(imageIcon.getIconHeight()+"x"+imageIcon.getIconWidth());
+		
+		if (imageIcon.getIconHeight() > 0){
+			allowButton();
+		}else{
+			imageIcon = new ImageIcon("res/bg.gif");
+			disableButton();
+		}
+		
 		lblImage.setIcon(imageIcon);
-		frame.repaint();
+		frame.repaint();	
 	}
 	
-	private void initialize()
-	{
+	private void initialize(){
 		frame = new JFrame("PIE - Partial Image Encryption");
 		frame.setBounds(100, 100, 987, 742);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -101,7 +120,10 @@ public class MainWindow
 		frame.getContentPane().add(lblImage);
 
 		
+		
+		
 		JButton btnLoadImage = new JButton("Load Image");
+		this.btnLoadImage = btnLoadImage;
 		btnLoadImage.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				
@@ -111,12 +133,10 @@ public class MainWindow
 				
 				if (dialogue.showOpenDialog(null)== JFileChooser.APPROVE_OPTION) {
 				    fichier = dialogue.getSelectedFile();
-				    try
-					{
+				    try{
 						sortie = new PrintWriter(new FileWriter(fichier.getPath(), true));
 					}
-					catch (IOException e)
-					{
+					catch (IOException e){
 						e.printStackTrace();
 					}
 				    sortie.close();
@@ -127,7 +147,10 @@ public class MainWindow
 		btnLoadImage.setBounds(421, 596, 115, 25);
 		frame.getContentPane().add(btnLoadImage);
 		
+		
+		
 		JButton btnEncrypt = new JButton("Encrypt");
+		this.btnEncrypt = btnEncrypt;
 		btnEncrypt.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				EncryptionWindow ew = new EncryptionWindow();
@@ -137,7 +160,10 @@ public class MainWindow
 		btnEncrypt.setBounds(725, 557, 97, 25);
 		frame.getContentPane().add(btnEncrypt);
 		
+		
+		
 		JButton btnDecrypt = new JButton("Decrypt");
+		this.btnDecrypt = btnDecrypt;
 		btnDecrypt.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				DecryptionWindow dw = new DecryptionWindow();
@@ -147,10 +173,14 @@ public class MainWindow
 		btnDecrypt.setBounds(725, 609, 97, 25);
 		frame.getContentPane().add(btnDecrypt);
 		
+		
+		
 		//Button to create zones 
 		Icon createIcon = new ImageIcon("res/select.png");
-		JButton btnNewZones = new JButton(createIcon);
+		JToggleButton btnNewZones = new JToggleButton(createIcon);
+		this.btnNewZones = btnNewZones;
 		btnNewZones.setToolTipText("Create new zones");
+		btnNewZones.setEnabled(false);
 		btnNewZones.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 			}
@@ -158,7 +188,9 @@ public class MainWindow
 		btnNewZones.setBounds(117, 512, 50, 38);
 		frame.getContentPane().add(btnNewZones);
 		
+		
 		JButton btnSelectAll = new JButton("Select All");
+		this.btnSelectAll = btnSelectAll;
 		/*
 		btnSelectAll.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -167,15 +199,21 @@ public class MainWindow
 		*/
 		btnSelectAll.setToolTipText("Select all image");
 		btnSelectAll.setBounds(93, 621, 97, 25);
+		btnSelectAll.setEnabled(false);
 		frame.getContentPane().add(btnSelectAll);
+		
+		
 		
 		//Button to select zones
 		Icon mousePointer = new ImageIcon("res/mouse.png");
-		JButton btnSelectZones = new JButton(mousePointer);
+		// JButton btnSelectZones = new JButton(mousePointer);
+		JToggleButton btnSelectZones = new JToggleButton(mousePointer);
+		this.btnSelectZones = btnSelectZones;
 		btnSelectZones.setToolTipText("Select zones");
 		btnSelectZones.setBounds(117, 570, 50, 38);
+		btnSelectZones.setEnabled(false);
 		frame.getContentPane().add(btnSelectZones);
-		
+	
 		
 	}
 }
