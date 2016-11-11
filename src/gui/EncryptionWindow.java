@@ -66,7 +66,10 @@ public class EncryptionWindow {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 					// Gestion du mot de passe
-						
+				if(passwordTextField.getText().equals("password"))
+					frame.setContentPane(new ResultPanel(frame, "Encryption successed"));
+				else frame.setContentPane(new ResultPanel(frame, "Encryption failed"));
+				frame.revalidate();
 			}
 		});
 	}
