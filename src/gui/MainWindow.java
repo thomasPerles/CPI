@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+
 import java.awt.Component;
 
 import javax.imageio.ImageIO;
@@ -61,34 +63,47 @@ public class MainWindow
 	/**
 	 * Initialize the contents of the frame.
 	 */
+	
+	private void updateImage(JLabel lblImage, JFrame frame, File fichier){
+		ImageIcon image = new ImageIcon(fichier.toString());
+		lblImage.setIcon(image);
+		frame.repaint();
+	}
+	
 	private void initialize()
 	{
-		frame = new JFrame();
+		frame = new JFrame("PIE - Partial Image Encryption");
 		frame.setBounds(100, 100, 987, 742);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
+
+
+        ImageIcon image = new ImageIcon("res/select.png");
+        JLabel lblImage = new JLabel(image);
+		lblImage.setBounds(41, 35, 883, 439);
+		frame.getContentPane().add(lblImage);
+
 		
 		JButton btnLoadImage = new JButton("Load Image");
 		btnLoadImage.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-	
+				
 				JFileChooser dialogue = new JFileChooser(new File("."));
 				PrintWriter sortie = null;
 				File fichier;
 				
-				if (dialogue.showOpenDialog(null)== 
-				    JFileChooser.APPROVE_OPTION) {
+				if (dialogue.showOpenDialog(null)== JFileChooser.APPROVE_OPTION) {
 				    fichier = dialogue.getSelectedFile();
 				    try
 					{
-						sortie = new PrintWriter
-						(new FileWriter(fichier.getPath(), true));
+						sortie = new PrintWriter(new FileWriter(fichier.getPath(), true));
 					}
 					catch (IOException e)
 					{
 						e.printStackTrace();
 					}
 				    sortie.close();
+				    updateImage(lblImage, frame, fichier);
 				}
 			}	
 		});
@@ -115,13 +130,15 @@ public class MainWindow
 		btnDecrypt.setBounds(725, 609, 97, 25);
 		frame.getContentPane().add(btnDecrypt);
 		
-		Icon mousePointer = new ImageIcon("res/mouse.png");
-		JButton btnNewZones = new JButton(mousePointer);
+		//Button to create zones 
+		Icon createIcon = new ImageIcon("res/select.png");
+		JButton btnNewZones = new JButton(createIcon);
+		btnNewZones.setToolTipText("Create new zones");
 		btnNewZones.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 			}
 		});
-		btnNewZones.setBounds(124, 540, 33, 25);
+		btnNewZones.setBounds(117, 512, 50, 38);
 		frame.getContentPane().add(btnNewZones);
 		
 		JButton btnSelectAll = new JButton("Select All");
@@ -131,12 +148,17 @@ public class MainWindow
 			}
 		});
 		*/
+		btnSelectAll.setToolTipText("Select all zones");
 		btnSelectAll.setBounds(93, 621, 97, 25);
 		frame.getContentPane().add(btnSelectAll);
 		
-		Icon selectIcon = new ImageIcon("res/select.png");
-		JButton btnSelectZones = new JButton(selectIcon);
-		btnSelectZones.setBounds(83, 583, 121, 25);
+		//Button to select zones
+		Icon mousePointer = new ImageIcon("res/mouse.png");
+		JButton btnSelectZones = new JButton(mousePointer);
+		btnSelectZones.setToolTipText("Select zones");
+		btnSelectZones.setBounds(117, 570, 50, 38);
 		frame.getContentPane().add(btnSelectZones);
+		
+		
 	}
 }
