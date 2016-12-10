@@ -11,43 +11,18 @@ import java.util.Random;
 
 import javax.imageio.ImageIO;
 
-import controller.Controller;
-import controller.ImageDisplayController;
-import view.ImageDisplay;
-
-public class ImageLoaderTL extends ImageLoader {
+public class ImageModel {
 
 	private BufferedImage image;
 	private WritableRaster wRaster;
 	private DataBuffer data;
-
-	public ImageLoaderTL() {		
+	
+	public ImageModel() {
+		
 	}
 
-	public static void main(String[] args) {
-		ImageLoaderTL iTL = new ImageLoaderTL();
-
-		iTL.loadByPixel("res-test/bearbull.bmp");
-
-		BufferedImage buff = iTL.getImage();
-		int height = buff.getHeight();
-		int width = buff.getWidth();
-		
-		iTL.pixelateImage(100, 100, 100, 100);
-		iTL.pixelateImage(4, 10, 4, 10);
-		
-		ImageDisplay disp = new ImageDisplay(iTL);
-		Controller controller = new ImageDisplayController(iTL, disp);
-		disp.run();
-		/*iTL.pixelateImage(50, 60, 10, 200);
-		iTL.pixelateImage(150, 60, 10, 150);*/
-		
-		// System.out.println("Image loaded");
-		// System.out.println(iTL);
-
-		// iTL.pixelateImage(10, 60, 10, 200);
-
-		// iTL.getImageDisplay().run();
+	public ImageModel(String path) {
+		loadByPixel(path);
 	}
 
 	public void saveBMP() {
