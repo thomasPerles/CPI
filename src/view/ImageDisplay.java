@@ -1,5 +1,6 @@
 package view;
 
+import java.awt.Canvas;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Rectangle;
@@ -10,7 +11,7 @@ import javax.swing.JPanel;
 import model.ImageLoaderTL;
 
 @SuppressWarnings("serial")
-public class ImageDisplay extends JPanel implements Runnable {
+public class ImageDisplay extends Canvas implements Runnable {
 
 	private ImageLoaderTL iTL;
 
@@ -19,8 +20,8 @@ public class ImageDisplay extends JPanel implements Runnable {
 	}
 	
 	@Override
-	public void paintComponent(Graphics g) {
-		super.paintComponent(g);
+	public void paint(Graphics g) {
+		super.paint(g);
 		g.drawImage(iTL.getImage(), 0, 0, this);
 	}
 

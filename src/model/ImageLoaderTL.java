@@ -27,7 +27,7 @@ public class ImageLoaderTL extends ImageLoader {
 	public static void main(String[] args) {
 		ImageLoaderTL iTL = new ImageLoaderTL();
 
-		iTL.loadByPixel("res/jungle.jpg");
+		iTL.loadByPixel("res-test/bearbull.bmp");
 
 		BufferedImage buff = iTL.getImage();
 		int height = buff.getHeight();
@@ -52,7 +52,7 @@ public class ImageLoaderTL extends ImageLoader {
 
 	public void saveBMP() {
 		try {
-			ImageIO.write((RenderedImage) image, "bmp", new File("res-test/test.bmp"));
+			ImageIO.write((RenderedImage) image, "bmp", new File("res-test/bearbull.bmp"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
