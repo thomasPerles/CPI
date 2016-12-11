@@ -2,39 +2,41 @@ package main;
 
 import java.awt.EventQueue;
 
-import controller.ImageController;
+import controller.NewZoneImageController;
+import controller.SelectZoneImageController;
+import controller.WindowController;
 import gui.MainWindow;
 import model.ImageModel;
 import view.ImageView;
 
 public class Main {
 
-	public static void main(String[] args) {
+    public static void main(String[] args) {
 
-		// Initialise model
-		// ImageModel model = new ImageModel("res-test/bearbull.bmp");
-		ImageModel model = new ImageModel();
+	EventQueue.invokeLater(new Runnable() {
+	    public void run() {
+		try {
 
-		// Initialise view
-		ImageView view = new ImageView(model);
+		    ImageModel model = new ImageModel();
+		    ImageView view = new ImageView(model);
 
-		// Initialise controller sans mod√®le car le mod√®le manque une image
-		ImageController imageController = new ImageController(null, view);
+		    // DÈsactiver les fonctionalitÈs d'intÈraction tant qu'une
+		    // image n'est pas chargÈe
+		    NewZoneImageController nziController = new NewZoneImageController(null, view);
+		    SelectZoneImageController sziController = new SelectZoneImageController(null, view);
 
-		// Faire conna√Ætre le contr√¥leur √† la vue
-		view.setController(imageController);
-		
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					MainWindow window = new MainWindow(model, view, imageController);
-					window.getFrame().setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
+		    WindowController wcontroller = new WindowController(model, nziController, sziController);
 
-	}
+		    MainWindow window = new MainWindow(model, view, wcontroller);
+
+		    window.getFrame().setVisible(true);
+
+		} catch (Exception e) {
+		    e.printStackTrace();
+		}
+	    }
+	});
+
+    }
 
 }
