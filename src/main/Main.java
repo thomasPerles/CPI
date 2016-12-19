@@ -11,32 +11,32 @@ import view.ImageView;
 
 public class Main {
 
-    public static void main(String[] args) {
+	public static void main(String[] args) {
 
-	EventQueue.invokeLater(new Runnable() {
-	    public void run() {
-		try {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
 
-		    ImageModel model = new ImageModel();
-		    ImageView view = new ImageView(model);
+					ImageModel model = new ImageModel();
+					ImageView view = new ImageView(model);
 
-		    // Désactiver les fonctionalités d'intéraction tant qu'une
-		    // image n'est pas chargée
-		    NewZoneImageController nziController = new NewZoneImageController(null, view);
-		    SelectZoneImageController sziController = new SelectZoneImageController(null, view);
+					// Dï¿½sactiver les fonctionalitï¿½s d'intï¿½raction tant qu'une
+					// image n'est pas chargï¿½e
+					NewZoneImageController nziController = new NewZoneImageController();
+					SelectZoneImageController sziController = new SelectZoneImageController();
 
-		    WindowController wcontroller = new WindowController(model, nziController, sziController);
+					WindowController wcontroller = new WindowController(model, view, nziController, sziController);
 
-		    MainWindow window = new MainWindow(model, view, wcontroller);
+					MainWindow window = new MainWindow(model, view, wcontroller);
 
-		    window.getFrame().setVisible(true);
+					window.getFrame().setVisible(true);
 
-		} catch (Exception e) {
-		    e.printStackTrace();
-		}
-	    }
-	});
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
 
-    }
+	}
 
 }
