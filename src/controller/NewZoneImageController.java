@@ -53,9 +53,9 @@ public class NewZoneImageController extends ImageController {
     @Override
     public void mouseReleased(MouseEvent e) {
 	Graphics g = this.model.getImage().createGraphics();
-	g.setColor(Color.BLUE);
-	g.drawRect((int) selectedRect.getX(), (int) selectedRect.getY(), (int) selectedRect.getWidth(),
-		(int) selectedRect.getHeight());
+	//g.setColor(Color.BLUE);
+	//g.drawRect((int) selectedRect.getX(), (int) selectedRect.getY(), (int) selectedRect.getWidth(),
+		//(int) selectedRect.getHeight());
 	g.setColor(Color.LIGHT_GRAY);
 	g.fillRect((int) selectedRect.getX(), (int) selectedRect.getY(), (int) selectedRect.getWidth(),
 		(int) selectedRect.getHeight());
@@ -82,9 +82,9 @@ public class NewZoneImageController extends ImageController {
 	Graphics2D g = copy.createGraphics();
 	g.drawImage(orig, 0, 0, null);
 	if (selectedRect != null) {
-	    g.setColor(Color.BLUE);
+	    //g.setColor(Color.BLUE);
 	    // System.out.println("repaint ...");
-	    g.draw(selectedRect);
+	    //g.draw(selectedRect);
 	    g.setColor(Color.LIGHT_GRAY);
 	    g.fill(selectedRect);
 	}
