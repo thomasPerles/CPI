@@ -1,21 +1,41 @@
 package controller;
 
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.Iterator;
 
-import model.ImageModel;
 import view.ImageView;
 
 public class SelectZoneImageController extends ImageController {
 
+	private ArrayList<Rectangle> rectangles;
+	private Rectangle selectedRect;
+	private Point oldPoint;
+	
+	
 	public SelectZoneImageController() {
-		
 	}
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		// TODO Auto-generated method stub
-
+		Boolean rectangleSelected = false;
+		for (Iterator<Rectangle> it = rectangles.iterator(); it.hasNext();) {
+			Rectangle next = it.next();
+			if (next.contains(e.getPoint())) {
+				selectedRect = next;
+				rectangleSelected = true;
+				this.view.paintRectangles(selectedRect, true);
+			}
+		}
+		if(!rectangleSelected)
+		{
+			this.selectedRect = null;
+			this.view.paintRectangles(null, false);
+		}
+			
 	}
 
 	@Override
@@ -32,20 +52,30 @@ public class SelectZoneImageController extends ImageController {
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
-
+		for (Iterator<Rectangle> it = rectangles.iterator(); it.hasNext();) {
+			Rectangle next = it.next();
+			if (next.contains(e.getPoint())) {
+				selectedRect = next;
+				oldPoint = new Point(e.getPoint());
+			}
+		}
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
 	public void mouseDragged(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-
+		if(selectedRect != null) {
+			Point point = new Point(arg0.getPoint());
+			int xDiff = point.x - oldPoint.x;
+			int yDiff = point.y - oldPoint.y;
+			selectedRect.setLocation(new Point(selectedRect.x + xDiff, selectedRect.y + yDiff));
+			this.view.paintRectangles(selectedRect, true);
+			oldPoint.setLocation(point);
+		}
 	}
 
 	@Override
@@ -56,8 +86,14 @@ public class SelectZoneImageController extends ImageController {
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		// TODO Auto-generated method stub
-
+		if(e.getKeyChar() == KeyEvent.VK_DELETE && this.selectedRect != null) {
+			try {
+				this.view.remove(selectedRect);
+				this.view.paintRectangles(null, false);
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
+		}
 	}
 
 	@Override
@@ -71,4 +107,12 @@ public class SelectZoneImageController extends ImageController {
 		// TODO Auto-generated method stub
 
 	}
+
+	@Override
+	public void setView(ImageView view) {
+		if(view != null)
+			this.rectangles = view.getRectangles();
+		super.setView(view);
+	}
+
 }

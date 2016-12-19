@@ -36,7 +36,6 @@ public class NewZoneImageController extends ImageController {
 
 	@Override
 	public void mousePressed(MouseEvent arg0) {
-		System.out.println(arg0);
 		this.start = arg0.getPoint();
 		this.selectedRect = new Rectangle(start.x, start.y, 0, 0);
 
@@ -71,7 +70,7 @@ public class NewZoneImageController extends ImageController {
 		// end.y - start.y));
 		this.selectedRect = new Rectangle(this.start);
 		selectedRect.add(end);
-		this.view.paintRectangle(this.selectedRect);
+		this.view.paintRectangles(this.selectedRect, false);
 		// repaint(this.model.getImage(), this.model.getImage());
 		// System.out.println("Rectangle: " + selectedRect);
 	}
