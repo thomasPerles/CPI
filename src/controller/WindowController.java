@@ -9,75 +9,83 @@ import javax.swing.JComponent;
 import javax.swing.JToggleButton;
 
 import model.ImageModel;
+import view.ImageView;
 
 public class WindowController implements ItemListener {
 
-    private HashMap<String, JComponent> components;
-    private ImageModel model;
-    private NewZoneImageController nziController;
-    private SelectZoneImageController sziController;
+	private HashMap<String, JComponent> components;
+	private ImageModel model;
+	private NewZoneImageController nziController;
+	private SelectZoneImageController sziController;
+	private ImageView view;
 
-    public WindowController(ImageModel model, NewZoneImageController nziController,
-	    SelectZoneImageController sziController) {
-	this.components = new HashMap<String, JComponent>();
-	this.model = model;
-	this.nziController = nziController;
-	this.sziController = sziController;
-    }
-
-    public void addComponent(String name, JComponent jc) {
-	this.components.put(name, jc);
-    }
-
-    @Override
-    public void itemStateChanged(ItemEvent e) {
-	for (Iterator<String> it = components.keySet().iterator(); it.hasNext();) {
-
-	    String next = it.next();
-	    JToggleButton jb = (JToggleButton) components.get(next);
-
-	    if (jb == e.getSource()) {
-
-		if (next.equals("selectZone")) {
-
-		    if (jb.isSelected()) {
-
-			// Désactiver toutes fonctionalité autre que la
-			// sélection de zones
-			for (Iterator<String> it2 = components.keySet().iterator(); it2.hasNext();) {
-			    String next2 = it2.next();
-			    if (!next2.equals("selectZone"))
-				((JToggleButton) this.components.get(next2)).setSelected(false);
-			}
-			this.nziController.setModel(null);
-
-			// Activer les fonctionalités de sélection de zones
-			this.sziController.setModel(this.model);
-		    } else {
-			this.sziController.setModel(null);
-		    }
-		}
-
-		if (next.equals("newZone")) {
-
-		    if (jb.isSelected()) {
-			// Désactiver toutes fonctionalité autre que la création
-			// de
-			// zones
-			for (Iterator<String> it2 = components.keySet().iterator(); it2.hasNext();) {
-			    String next2 = it2.next();
-			    if (!next2.equals("newZone"))
-				((JToggleButton) this.components.get(next2)).setSelected(false);
-			}
-			this.sziController.setModel(null);
-			// Activer les fonctionnalités de création de zones
-			this.nziController.setModel(this.model);
-		    } else {
-			this.nziController.setModel(null);
-		    }
-		}
-	    }
+	public WindowController(ImageModel model, ImageView view, NewZoneImageController nziController,
+			SelectZoneImageController sziController) {
+		this.components = new HashMap<String, JComponent>();
+		this.model = model;
+		this.view = view;
+		this.nziController = nziController;
+		this.sziController = sziController;
 	}
-    }
+
+	public void addComponent(String name, JComponent jc) {
+		this.components.put(name, jc);
+	}
+
+	@Override
+	public void itemStateChanged(ItemEvent e) {
+		for (Iterator<String> it = components.keySet().iterator(); it.hasNext();) {
+
+			String next = it.next();
+			JToggleButton jb = (JToggleButton) components.get(next);
+
+			if (jb == e.getSource()) {
+
+				if (next.equals("selectZone")) {
+
+					if (jb.isSelected()) {
+
+						// Dï¿½sactiver toutes fonctionalitï¿½ autre que la
+						// sï¿½lection de zones
+						for (Iterator<String> it2 = components.keySet().iterator(); it2.hasNext();) {
+							String next2 = it2.next();
+							if (!next2.equals("selectZone"))
+								((JToggleButton) this.components.get(next2)).setSelected(false);
+						}
+						this.nziController.setModel(null);
+						this.nziController.setView(null);
+						// Activer les fonctionalitï¿½s de sï¿½lection de zones
+						this.sziController.setModel(this.model);
+						this.sziController.setView(this.view);
+					} else {
+						this.sziController.setModel(null);
+						this.sziController.setView(null);
+					}
+				}
+
+				if (next.equals("newZone")) {
+
+					if (jb.isSelected()) {
+						// Dï¿½sactiver toutes fonctionalitï¿½ autre que la crï¿½ation
+						// de
+						// zones
+						for (Iterator<String> it2 = components.keySet().iterator(); it2.hasNext();) {
+							String next2 = it2.next();
+							if (!next2.equals("newZone"))
+								((JToggleButton) this.components.get(next2)).setSelected(false);
+						}
+						this.sziController.setModel(null);
+						this.sziController.setView(null);
+						// Activer les fonctionnalitï¿½s de crï¿½ation de zones
+						this.nziController.setModel(this.model);
+						this.nziController.setView(this.view);
+					} else {
+						this.nziController.setModel(null);
+						this.nziController.setView(null);
+					}
+				}
+			}
+		}
+	}
 
 }

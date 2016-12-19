@@ -9,19 +9,26 @@ import view.ImageView;
 
 public abstract class ImageController implements MouseListener, MouseMotionListener, KeyListener {
 
-    protected ImageModel model;
-    protected ImageView view;
+	protected ImageModel model;
+	protected ImageView view;
 
-    public ImageController(ImageModel model, ImageView view) {
-	this.model = model;
-	this.view = view;
-	view.addMouseListener(this);
-	view.addMouseMotionListener(this);
-	view.addKeyListener(this);
-    }
+	public ImageController() {
+		
+	}
 
-    public void setModel(ImageModel model) {
-	this.model = model;
-    }
+	public void setModel(ImageModel model) {
+		this.model = model;
+	}
+
+	public void setView(ImageView view) {
+		if (view != null) {
+			this.view = view;
+			this.view.addMouseListener(this);
+			this.view.addMouseMotionListener(this);
+			this.view.addKeyListener(this);
+			System.out.println("Listeners added");
+		}
+
+	}
 
 }
