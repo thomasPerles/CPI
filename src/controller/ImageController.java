@@ -13,7 +13,7 @@ public abstract class ImageController implements MouseListener, MouseMotionListe
 	protected ImageView view;
 
 	public ImageController() {
-		
+
 	}
 
 	public void setModel(ImageModel model) {
@@ -27,6 +27,11 @@ public abstract class ImageController implements MouseListener, MouseMotionListe
 			this.view.addMouseMotionListener(this);
 			this.view.addKeyListener(this);
 			System.out.println("Listeners added");
+		}
+		if (view == null && this.view != null) {
+			this.view.removeMouseListener(this);
+			this.view.removeMouseMotionListener(this);
+			this.view.removeKeyListener(this);
 		}
 
 	}
