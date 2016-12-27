@@ -57,6 +57,9 @@ public class SelectZoneImageController extends ImageController {
 			if (next.contains(e.getPoint())) {
 				selectedRect = next;
 				oldPoint = new Point(e.getPoint());
+				break;
+			} else {
+				selectedRect = null;
 			}
 		}
 	}
