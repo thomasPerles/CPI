@@ -16,6 +16,7 @@ import javax.swing.JFrame;
 import javax.swing.JToggleButton;
 
 import controller.WindowController;
+import main.Main;
 import model.ImageModel;
 import view.ImageView;
 
@@ -160,6 +161,8 @@ public class MainWindow {
 					} catch (IOException e) {
 					}
 					pw.close();
+					Main.filePath = file.getAbsolutePath();
+					Main.fileName = file.getName();
 					updateImageModel(file);
 				}
 			}

@@ -12,6 +12,7 @@ import view.ImageView;
 public class Main {
 
 	public static ImageModel model;
+	public static String fileName, filePath;
 	
 	public static void main(String[] args) {
 

@@ -1,14 +1,19 @@
 package gui;
 
 import java.awt.Rectangle;
+import java.awt.image.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -16,6 +21,7 @@ import javax.swing.JTextField;
 
 import main.Main;
 import model.ImageModel;
+import model.ImageModelJSON;
 import view.ImageView;
 
 public class EncryptionWindow {
@@ -25,6 +31,7 @@ public class EncryptionWindow {
 	private ImageView view;
 	private ArrayList<Rectangle> rectangles;
 	private String  password;
+	private ImageModelJSON imageModelJSON;;
 
 	public void setVisible(boolean state) {
 		frame.setVisible(state);
@@ -36,6 +43,7 @@ public class EncryptionWindow {
 	 */
 	public EncryptionWindow(ImageView view) {
 		this.view = view;
+		this.imageModelJSON = new ImageModelJSON();
 		initialize();
 	}
 
@@ -88,8 +96,31 @@ public class EncryptionWindow {
 				// Créer le fichier json
 				if(Main.model != null) {
 					imageModel = Main.model;
-					String filename = imageModel.getImage().toString();
-					System.out.println(filename);
+					
+					//String filename = imageModel.getImage().;
+					BufferedImage image = imageModel.getImage();
+					
+					// pxels en RGB originaux
+					int [][] rgbs = getRGB(image);
+					//System.out.println(rgbs);
+					
+					encription(rgbs, image);
+					
+					// recrée l'image avec les RGB originaux
+					File outputfile = new File("saved.jpg");
+				    try {
+						ImageIO.write(createBufferedImage(rgbs, image.getWidth(), image.getHeight()), "jpg", outputfile);
+					} catch (IOException e2) {
+						// TODO Auto-generated catch block
+						e2.printStackTrace();
+					}
+					
+					try {
+						imageModelJSON.writeImageModelJSONFile(Main.filePath, Main.fileName, password);
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 				}
 				
 				// TODO
@@ -123,5 +154,40 @@ public class EncryptionWindow {
 				*/
 			}
 		});
+
+	}
+	
+	protected void encription(int[][] rgbs, BufferedImage image) {
+		
+		
+	}
+
+	public static int[][] getRGB(BufferedImage image) {
+		System.out.println(image.getHeight() + " " + image.getWidth());
+		//System.out.println("rgb 1, 1 = " + image.getRGB(1, 1));
+		int[][] rgbs = new int[image.getWidth()][image.getHeight()];
+		for(int i = 0; i < image.getWidth(); i++){
+		    for(int j = 0; j < image.getHeight(); j++){
+		    	System.out.println("i = " + i + " j = " + j + " RGB = " + image.getRGB(i, j));
+		        rgbs[i][j] = image.getRGB(i, j);
+		    }
+		}
+		return rgbs;
+	}
+	
+	public static BufferedImage createBufferedImage(int[][] rgbs, int width, int height) {
+		BufferedImage buff = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+		for(int i = 0; i < width; i++){
+		    for(int j = 0; j < height; j++){
+		    	//System.out.println("i = " + i + " j = " + j + " RGB = " + image.getRGB(i, j));
+		        buff.setRGB(i, j, rgbs[i][j]);
+		    }
+		}
+		return buff;
+		
+		/*
+		 File outputfile = new File("saved.png");
+    ImageIO.write(bi, "png", outputfile);
+		 */
 	}
 }
