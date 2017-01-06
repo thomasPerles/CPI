@@ -9,12 +9,10 @@ import java.util.ArrayList;
 public class NewZoneImageController extends ImageController {
 
 	private Rectangle selectedRect;
-	private ArrayList<Rectangle> listeRectToEncrypt;
 
 	private Point start;
 
 	public NewZoneImageController() {
-		this.listeRectToEncrypt = new ArrayList<Rectangle>();
 		this.start = new Point();
 	}
 
@@ -52,9 +50,7 @@ public class NewZoneImageController extends ImageController {
 		g.fillRect((int) selectedRect.getX(), (int) selectedRect.getY(), (int) selectedRect.getWidth(),
 				(int) selectedRect.getHeight());
 		*/
-		listeRectToEncrypt.add(selectedRect);
 		this.view.incorporateRectangle();
-		System.out.println("Selected : " + listeRectToEncrypt.size());
 
 	}
 

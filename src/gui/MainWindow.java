@@ -171,7 +171,7 @@ public class MainWindow {
 		// this.btnEncrypt = btnEncrypt;
 		btnEncrypt.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				EncryptionWindow ew = new EncryptionWindow();
+				EncryptionWindow ew = new EncryptionWindow(view);
 				ew.setVisible(true);
 			}
 		});
@@ -227,7 +227,7 @@ public class MainWindow {
 		this.wcontroller.addComponent("selectZone", btnSelectZone);
 		btnSelectZone.addItemListener(this.wcontroller);
 
-		frame.setResizable(false);
+		// frame.setResizable(false);
 	}
 
 	public JFrame getFrame() {
