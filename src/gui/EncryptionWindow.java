@@ -108,8 +108,8 @@ public class EncryptionWindow {
 					// pxels en RGB originaux
 					int [][] rgbs = getRGB(image);
 					//System.out.println(rgbs);
-					
-					encription(rgbs, image);
+					System.out.println(rgbtoString(rgbs, image.getWidth(), image.getHeight()));
+					//encription(rgbs, image);
 					
 					// recrée l'image avec les RGB originaux
 					File outputfile = new File("saved.jpg");
@@ -185,7 +185,7 @@ System.out.println(aesKey.toString());
 System.out.println(encryptedBytes);
 			// Decrypt cipher
 			Cipher decryptCipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
-			IvParameterSpec ivParameterSpec = new IvParameterSpec(aesKey.getEncoded());
+			IvParameterSpec ivParameterSpec = new IvParameterSpec(encryptCipher.getIV());
 			decryptCipher.init(Cipher.DECRYPT_MODE, aesKey, ivParameterSpec);
 System.out.println(ivParameterSpec.toString());
 			// Decrypt
