@@ -1,19 +1,24 @@
 package gui;
 
 import java.awt.Rectangle;
-import java.awt.image.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
+import javax.crypto.Cipher;
+import javax.crypto.CipherInputStream;
+import javax.crypto.CipherOutputStream;
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.IvParameterSpec;
 import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -158,17 +163,65 @@ public class EncryptionWindow {
 	}
 	
 	protected void encription(int[][] rgbs, BufferedImage image) {
-		
-		
+		String s = rgbtoString(rgbs, image.getWidth(), image.getHeight());
+		System.out.println(s);
+		try {
+			// Generate key
+			KeyGenerator kgen = KeyGenerator.getInstance("AES");
+			kgen.init(128);
+			SecretKey aesKey = kgen.generateKey();
+System.out.println(aesKey.toString());
+			// Encrypt cipher
+			Cipher encryptCipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+			encryptCipher.init(Cipher.ENCRYPT_MODE, aesKey);
+
+			// Encrypt
+			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+			CipherOutputStream cipherOutputStream = new CipherOutputStream(outputStream, encryptCipher);
+			cipherOutputStream.write(s.getBytes());
+			cipherOutputStream.flush();
+			cipherOutputStream.close();
+			byte[] encryptedBytes = outputStream.toByteArray();
+System.out.println(encryptedBytes);
+			// Decrypt cipher
+			Cipher decryptCipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+			IvParameterSpec ivParameterSpec = new IvParameterSpec(aesKey.getEncoded());
+			decryptCipher.init(Cipher.DECRYPT_MODE, aesKey, ivParameterSpec);
+System.out.println(ivParameterSpec.toString());
+			// Decrypt
+			outputStream = new ByteArrayOutputStream();
+			ByteArrayInputStream inStream = new ByteArrayInputStream(encryptedBytes);
+			CipherInputStream cipherInputStream = new CipherInputStream(inStream, decryptCipher);
+			byte[] buf = new byte[1024];
+			int bytesRead;
+			while ((bytesRead = cipherInputStream.read(buf)) >= 0) {
+				outputStream.write(buf, 0, bytesRead);
+			}
+
+			System.out.println("Result: " + new String(outputStream.toByteArray()));
+
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
+	
+	public String rgbtoString(int[][] rgbs, int width, int height) {
+		String res = "";
+		for(int i = 0; i < width; i++){
+			for(int j = 0; j< height; j++){
+				res+=String.valueOf(rgbs[i][j]);
+			}
+		}
+		return res;
 	}
 
 	public static int[][] getRGB(BufferedImage image) {
-		System.out.println(image.getHeight() + " " + image.getWidth());
+		//System.out.println(image.getHeight() + " " + image.getWidth());
 		//System.out.println("rgb 1, 1 = " + image.getRGB(1, 1));
 		int[][] rgbs = new int[image.getWidth()][image.getHeight()];
 		for(int i = 0; i < image.getWidth(); i++){
 		    for(int j = 0; j < image.getHeight(); j++){
-		    	System.out.println("i = " + i + " j = " + j + " RGB = " + image.getRGB(i, j));
+		    	//System.out.println("i = " + i + " j = " + j + " RGB = " + image.getRGB(i, j));
 		        rgbs[i][j] = image.getRGB(i, j);
 		    }
 		}
