@@ -11,13 +11,15 @@ import view.ImageView;
 
 public class Main {
 
+	public static ImageModel model;
+	
 	public static void main(String[] args) {
 
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
 
-					ImageModel model = new ImageModel();
+					model = new ImageModel();
 					ImageView view = new ImageView(model);
 
 					// Desactiver les fonctionalites d'interaction tant qu'une

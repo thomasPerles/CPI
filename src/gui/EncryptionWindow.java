@@ -14,6 +14,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
+import main.Main;
+import model.ImageModel;
 import view.ImageView;
 
 public class EncryptionWindow {
@@ -22,6 +24,7 @@ public class EncryptionWindow {
 	private JTextField passwordTextField;
 	private ImageView view;
 	private ArrayList<Rectangle> rectangles;
+	private String  password;
 
 	public void setVisible(boolean state) {
 		frame.setVisible(state);
@@ -77,6 +80,20 @@ public class EncryptionWindow {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
+				if(passwordTextField.getText() != null)
+					password = passwordTextField.getText();
+				
+				ImageModel  imageModel;
+				
+				// Créer le fichier json
+				if(Main.model != null) {
+					imageModel = Main.model;
+					String filename = imageModel.getImage().toString();
+					System.out.println(filename);
+				}
+				
+				// TODO
+						 
 				// Recuperer les rectangles de la vue
 				rectangles = view.getRectangles();
 				
