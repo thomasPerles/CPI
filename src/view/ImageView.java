@@ -104,7 +104,10 @@ public class ImageView extends Canvas implements Runnable {
 		else
 			throw new Exception("Cannot remove non-existent rectangle!");
 	}
-
+	
+	public void resizeImageZone() {
+		
+	}
 	
 
 }
