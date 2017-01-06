@@ -1,6 +1,7 @@
 package crypto;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -12,6 +13,11 @@ public class TestMetaWrite2
 {
 	public void hideZipInImage(String imageFolder, String imageName) throws IOException{
 		//Creer un zip avec le json dedans
+		//FileInputStream in = new FileInputStream(imageFolder+"/"+imageName);
+		
+		File imageFile = new File(imageFolder+imageName);
+		imageFolder = imageFile.getAbsolutePath().split(imageName)[0];
+		
 		FileInputStream in = new FileInputStream(imageFolder+imageName);
         ZipOutputStream out = new ZipOutputStream(new FileOutputStream(imageFolder+"json.zip"));
         out.putNextEntry(new ZipEntry(imageName)); 
@@ -24,7 +30,7 @@ public class TestMetaWrite2
         in.close();
         
         
-        //File imageFile = new File(imageFolder+imageName);
+        
         
 		//QUEL OS ?
         	//Windows ?
@@ -68,9 +74,7 @@ public class TestMetaWrite2
 				
 				
 			} catch (Exception ex) {}
-		} else if (os.indexOf("sunos") >= 0) { //SOLARIS
-			
-		} else {
+		}else {
 			System.out.println("Your OS is not support!!");
 		}
 	}
