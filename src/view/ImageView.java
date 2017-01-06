@@ -21,6 +21,22 @@ public class ImageView extends Canvas implements Runnable {
 	private Rectangle selectedRect;
 	private boolean selectingRectangles;
 
+	public Rectangle getSelectedRect() {
+		return selectedRect;
+	}
+
+	public void setSelectedRect(Rectangle selectedRect) {
+		this.selectedRect = selectedRect;
+	}
+
+	public boolean isSelectingRectangles() {
+		return selectingRectangles;
+	}
+
+	public void setSelectingRectangles(boolean selectingRectangles) {
+		this.selectingRectangles = selectingRectangles;
+	}
+
 	public ImageView(ImageModel model) {
 		this.model = model;
 		this.rectangles = new ArrayList<Rectangle>();
@@ -31,26 +47,23 @@ public class ImageView extends Canvas implements Runnable {
 	public void paint(Graphics g) {
 		super.paint(g);
 		g.drawImage(model.getImage(), 0, 0, this.getWidth(), this.getHeight(), this);
-		
-		if(selectedRect != null)
-		{
-			if(selectingRectangles)
+
+		for (Iterator<Rectangle> it = rectangles.iterator(); it.hasNext();) {
+			Rectangle next = it.next();
+			if (next != null && next != selectedRect) {
+				g.setColor(Color.LIGHT_GRAY);
+				g.fillRect(next.x, next.y, next.width, next.height);
+			}
+		}
+
+		if (selectedRect != null) {
+			if (selectingRectangles)
 				g.setColor(Color.ORANGE);
 			else
 				g.setColor(Color.LIGHT_GRAY);
 			g.fillRect(selectedRect.x, selectedRect.y, selectedRect.width, selectedRect.height);
 		}
-		
-		for(Iterator<Rectangle> it = rectangles.iterator(); it.hasNext();)
-		{
-			Rectangle next = it.next();
-			if(next != null && next != selectedRect)
-			{
-				g.setColor(Color.LIGHT_GRAY);
-				g.fillRect(next.x, next.y, next.width, next.height);
-			}
-		}
-			
+
 	}
 
 	public void setModel(ImageModel model) {
@@ -68,27 +81,29 @@ public class ImageView extends Canvas implements Runnable {
 		f.setLocationRelativeTo(this);
 		f.setVisible(true);
 	}
-	
+
 	/*
-	 * Paint existing rectangles and selected rectangle. 
+	 * Paint existing rectangles and selected rectangle.
 	 * 
-	 * Boolean parameter determines whether selected rectangle is being created or has been selected, in which case its color will be Color.ORANGE.
+	 * Boolean parameter determines whether selected rectangle is being created
+	 * or has been selected, in which case its color will be Color.ORANGE.
 	 */
 	public void paintRectangles(Rectangle selectedRect, Boolean selectingRectangles) {
 		this.selectedRect = selectedRect;
-		if(selectingRectangles != this.selectingRectangles)
+		if (selectingRectangles != this.selectingRectangles)
 			this.selectingRectangles = selectingRectangles;
 		repaint();
 	}
-	
+
 	/*
-	 * Paint selected rectangles of array in Color.GRAY, others in Color.LIGHT_GRAY.
+	 * Paint selected rectangles of array in Color.GRAY, others in
+	 * Color.LIGHT_GRAY.
 	 */
 	public void paintRectangles(ArrayList<Rectangle> rectanglesToSelect) {
 		this.selectingRectangles = true;
 		// TODO
 	}
-	
+
 	public void incorporateRectangle() {
 		this.rectangles.add(this.selectedRect);
 		this.selectedRect = null;
@@ -99,12 +114,10 @@ public class ImageView extends Canvas implements Runnable {
 	}
 
 	public void remove(Rectangle selectedRect) throws Exception {
-		if(this.rectangles.contains(selectedRect))
+		if (this.rectangles.contains(selectedRect))
 			this.rectangles.remove(selectedRect);
 		else
 			throw new Exception("Cannot remove non-existent rectangle!");
 	}
-
-	
 
 }
