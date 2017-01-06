@@ -14,8 +14,7 @@ public class SelectZoneImageController extends ImageController {
 	private ArrayList<Rectangle> rectangles;
 	private Rectangle selectedRect;
 	private Point oldPoint;
-	
-	
+
 	public SelectZoneImageController() {
 	}
 
@@ -30,12 +29,10 @@ public class SelectZoneImageController extends ImageController {
 				this.view.paintRectangles(selectedRect, true);
 			}
 		}
-		if(!rectangleSelected)
-		{
+		if (!rectangleSelected) {
 			this.selectedRect = null;
 			this.view.paintRectangles(null, false);
 		}
-			
 	}
 
 	@Override
@@ -52,23 +49,30 @@ public class SelectZoneImageController extends ImageController {
 
 	@Override
 	public void mousePressed(MouseEvent e) {
+		Boolean rectangleSelected = false;
 		for (Iterator<Rectangle> it = rectangles.iterator(); it.hasNext();) {
 			Rectangle next = it.next();
 			if (next.contains(e.getPoint())) {
 				selectedRect = next;
-				oldPoint = new Point(e.getPoint());
+				rectangleSelected = true;
+				this.view.paintRectangles(selectedRect, true);
+				oldPoint = e.getPoint();
 			}
+		}
+		if (!rectangleSelected) {
+			this.selectedRect = null;
+			this.view.paintRectangles(null, false);
 		}
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		
+
 	}
 
 	@Override
 	public void mouseDragged(MouseEvent arg0) {
-		if(selectedRect != null) {
+		if (selectedRect != null) {
 			Point point = new Point(arg0.getPoint());
 			int xDiff = point.x - oldPoint.x;
 			int yDiff = point.y - oldPoint.y;
@@ -86,10 +90,12 @@ public class SelectZoneImageController extends ImageController {
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		if(e.getKeyChar() == KeyEvent.VK_DELETE && this.selectedRect != null) {
+		if (e.getKeyChar() == KeyEvent.VK_DELETE && this.selectedRect != null) {
 			try {
 				this.view.remove(selectedRect);
 				this.view.paintRectangles(null, false);
+				this.selectedRect = null;
+				this.view.setSelectingRectangles(false);
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
@@ -110,7 +116,7 @@ public class SelectZoneImageController extends ImageController {
 
 	@Override
 	public void setView(ImageView view) {
-		if(view != null)
+		if (view != null)
 			this.rectangles = view.getRectangles();
 		super.setView(view);
 	}
