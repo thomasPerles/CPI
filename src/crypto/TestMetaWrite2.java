@@ -78,16 +78,17 @@ public class TestMetaWrite2
 		{ // UNIX-LINUX
 			try
 			{	
-				String command = "cd " + imageFolder + " && cat " + imageName + " json.zip > " + imageName;
+				String command = "cd " + imageFolder + " && cat " + imageName + " json.zip > temp && cat temp > " + imageName + " && rm temp";
+				System.out.println(command);
 				String s;
 		        Process p;
 		        try {
 		        	p = Runtime.getRuntime().exec(new String[]{"/bin/sh", "-c", command});
 		            BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
 		            while ((s = br.readLine()) != null)
-		                System.out.println("line: " + s); //Sortie de la commande
+		                //System.out.println("line: " + s); //Sortie de la commande
 		            p.waitFor();
-		            System.out.println ("exit: " + p.exitValue());//Code de sortie de la commande
+		            //System.out.println ("exit: " + p.exitValue());//Code de sortie de la commande
 		            p.destroy();
 		        } catch (Exception e) {}
 			}catch (Exception ex){}
@@ -99,7 +100,7 @@ public class TestMetaWrite2
 		//Supprimer le zip		
 		Files.deleteIfExists(Paths.get(imageFolder+"json.zip"));
 		
-		//Supprimer le json d'ocigine !
+		//Supprimer le json d'origine !
 		Files.deleteIfExists(Paths.get(imageFolder+jsonName));
 	}
 
@@ -165,7 +166,6 @@ public class TestMetaWrite2
 		}
 		catch (IOException e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
