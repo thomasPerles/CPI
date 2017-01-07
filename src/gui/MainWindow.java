@@ -25,7 +25,6 @@ import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 
 import controller.WindowController;
-import main.Main;
 import model.ImageModel;
 import view.ImageView;
 
@@ -109,6 +108,11 @@ public class MainWindow {
 			this.view.setBounds((int) ((double) this.imagePortal.getWidth() / 2 - (double) new_width / 2),
 					(int) ((double) this.imagePortal.getHeight() / 2 - (double) new_height / 2), new_width,
 					new_height);
+			
+			if(model.getImage().getWidth() != new_width)
+				this.view.setResizingFactorX(new_width);
+			if(model.getImage().getHeight() != new_height)
+				this.view.setResizingFactorY(new_height);
 		}
 	}
 

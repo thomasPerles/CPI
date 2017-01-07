@@ -11,7 +11,7 @@ public class NewZoneImageController extends ImageController {
 	private Rectangle selectedRect;
 
 	private Point start;
-
+	
 	public NewZoneImageController() {
 		this.start = new Point();
 	}
@@ -51,7 +51,7 @@ public class NewZoneImageController extends ImageController {
 				(int) selectedRect.getHeight());
 		*/
 		this.view.incorporateRectangle();
-
+		System.out.println(this.selectedRect);
 	}
 
 	@Override

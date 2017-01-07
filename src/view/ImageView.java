@@ -14,49 +14,63 @@ import controller.ImageController;
 import model.ImageModel;
 
 @SuppressWarnings("serial")
-public class ImageView extends Canvas implements Runnable {
+public class ImageView extends Canvas implements Runnable
+{
 
 	private ImageModel model;
 	private ArrayList<Rectangle> rectangles;
 	private Rectangle selectedRect;
 	private boolean selectingRectangles;
+	private double resizingFactorX;
+	private double resizingFactorY;
 
-	public Rectangle getSelectedRect() {
+	public Rectangle getSelectedRect()
+	{
 		return selectedRect;
 	}
 
-	public void setSelectedRect(Rectangle selectedRect) {
+	public void setSelectedRect(Rectangle selectedRect)
+	{
 		this.selectedRect = selectedRect;
 	}
 
-	public boolean isSelectingRectangles() {
+	public boolean isSelectingRectangles()
+	{
 		return selectingRectangles;
 	}
 
-	public void setSelectingRectangles(boolean selectingRectangles) {
+	public void setSelectingRectangles(boolean selectingRectangles)
+	{
 		this.selectingRectangles = selectingRectangles;
 	}
 
-	public ImageView(ImageModel model) {
+	public ImageView(ImageModel model)
+	{
 		this.model = model;
 		this.rectangles = new ArrayList<Rectangle>();
 		this.selectingRectangles = false;
+		this.resizingFactorX = 1;
+		this.resizingFactorY = 1;
 	}
 
 	@Override
-	public void paint(Graphics g) {
+	public void paint(Graphics g)
+	{
 		super.paint(g);
 		g.drawImage(model.getImage(), 0, 0, this.getWidth(), this.getHeight(), this);
 
-		for (Iterator<Rectangle> it = rectangles.iterator(); it.hasNext();) {
+		for (Iterator<Rectangle> it = rectangles.iterator(); it.hasNext();)
+		{
 			Rectangle next = it.next();
-			if (next != null && next != selectedRect) {
+			if (next != null && next != selectedRect)
+			{
 				g.setColor(Color.LIGHT_GRAY);
 				g.fillRect(next.x, next.y, next.width, next.height);
 			}
 		}
 
-		if (selectedRect != null) {
+		if (selectedRect != null)
+		{
 			if (selectingRectangles)
 				g.setColor(Color.ORANGE);
 			else
@@ -66,12 +80,14 @@ public class ImageView extends Canvas implements Runnable {
 
 	}
 
-	public void setModel(ImageModel model) {
+	public void setModel(ImageModel model)
+	{
 		this.model = model;
 	}
 
 	@Override
-	public void run() {
+	public void run()
+	{
 		JFrame f = new JFrame();
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setBounds(new Rectangle(0, 0, model.getImage().getWidth(), model.getImage().getHeight()));
@@ -88,7 +104,8 @@ public class ImageView extends Canvas implements Runnable {
 	 * Boolean parameter determines whether selected rectangle is being created
 	 * or has been selected, in which case its color will be Color.ORANGE.
 	 */
-	public void paintRectangles(Rectangle selectedRect, Boolean selectingRectangles) {
+	public void paintRectangles(Rectangle selectedRect, Boolean selectingRectangles)
+	{
 		this.selectedRect = selectedRect;
 		if (selectingRectangles != this.selectingRectangles)
 			this.selectingRectangles = selectingRectangles;
@@ -99,21 +116,25 @@ public class ImageView extends Canvas implements Runnable {
 	 * Paint selected rectangles of array in Color.GRAY, others in
 	 * Color.LIGHT_GRAY.
 	 */
-	public void paintRectangles(ArrayList<Rectangle> rectanglesToSelect) {
+	public void paintRectangles(ArrayList<Rectangle> rectanglesToSelect)
+	{
 		this.selectingRectangles = true;
 		// TODO
 	}
 
-	public void incorporateRectangle() {
+	public void incorporateRectangle()
+	{
 		this.rectangles.add(this.selectedRect);
 		this.selectedRect = null;
 	}
 
-	public ArrayList<Rectangle> getRectangles() {
+	public ArrayList<Rectangle> getRectangles()
+	{
 		return this.rectangles;
 	}
 
-	public void remove(Rectangle selectedRect) throws Exception {
+	public void remove(Rectangle selectedRect) throws Exception
+	{
 		if (this.rectangles.contains(selectedRect))
 			this.rectangles.remove(selectedRect);
 		else
@@ -123,9 +144,54 @@ public class ImageView extends Canvas implements Runnable {
 	public void setRectangles(ArrayList<Rectangle> rectangles)
 	{
 		this.rectangles = rectangles;
-		if(rectangles == null) {
+		if (rectangles == null)
+		{
 			this.selectedRect = null;
 			this.selectingRectangles = false;
 		}
+	}
+
+	/**
+	 * 
+	 * @param resizingFactorX
+	 */
+	public void setResizingFactorX(int resizedWidth)
+	{
+		int imageWidth = model.getImage().getWidth();
+
+		double resizeFactorX = (double) imageWidth / (double) resizedWidth;
+
+		for (Iterator<Rectangle> it = this.rectangles.iterator(); it.hasNext();)
+		{
+			Rectangle rectangle = it.next();
+			rectangle.x = (int) (rectangle.x * resizeFactorX);
+			rectangle.width = (int) (rectangle.width * resizeFactorX);
+			System.out.println(rectangle);
+		}
+	}
+
+	public void setResizingFactorY(int resizedHeight)
+	{
+		int imageHeight = model.getImage().getHeight();
+
+		double resizeFactorY = (double) imageHeight / (double) resizedHeight;
+
+		for (Iterator<Rectangle> it = this.rectangles.iterator(); it.hasNext();)
+		{
+			Rectangle rectangle = it.next();
+			rectangle.y = (int) (rectangle.y * resizeFactorY);
+			rectangle.height = (int) (rectangle.height * resizeFactorY);
+			System.out.println(rectangle);
+		}
+	}
+
+	public double getResizingFactorX()
+	{
+		return this.resizingFactorX;
+	}
+
+	public double getResizingFactorY()
+	{
+		return this.resizingFactorY;
 	}
 }
