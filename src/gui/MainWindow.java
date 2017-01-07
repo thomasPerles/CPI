@@ -44,6 +44,8 @@ public class MainWindow {
 	private ImageModel model;
 	private ImageView view;
 	private WindowController wcontroller;
+	
+	private String fileName, path;
 
 	private final int xOffset = 25;
 	private final int yOffset = 25;
@@ -166,9 +168,9 @@ public class MainWindow {
 					}
 					pw.close();
 					
-					// TODO getting filePath and fileName and give it to Encription window
-					/*Main.filePath = file.getAbsolutePath();
-					Main.fileName = file.getName();*/
+					// getting filePath and fileName and give it to Encription window
+					path = file.getAbsolutePath();
+					fileName = file.getName();
 					updateImageModel(file);
 				}
 			}
@@ -178,7 +180,7 @@ public class MainWindow {
 		JButton btnEncrypt = new JButton("Encrypt");
 		btnEncrypt.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				EncryptionWindow ew = new EncryptionWindow(view);
+				EncryptionWindow ew = new EncryptionWindow(view, fileName, path, model);
 				ew.setVisible(true);
 			}
 		});
