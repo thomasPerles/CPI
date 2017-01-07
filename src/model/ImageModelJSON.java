@@ -54,15 +54,15 @@ public class ImageModelJSON {
 		 return null;
 	 }
 	 
-	 public void writeImageModelJSONFile(String filePath, String fileName, String password, String encryptedString) throws IOException {
+	 public void writeImageModelJSONFile(String filePath, String fileName, String key, String encryptedString) throws IOException {
 		 JSONObject obj = new JSONObject();
 			obj.put("filePath", filePath);
 			obj.put("fileName", fileName);
-			obj.put("password", password);
+			obj.put("clef", key);
 			obj.put("encryptedString", encryptedString);
 	 
 			// try-with-resources statement based on post comment below :)
-			try (FileWriter file = new FileWriter("res-test/"+ fileName +".json")) {
+			try (FileWriter file = new FileWriter("res-test/"+ fileName.split("\\.")[0] + "_" + fileName.split("\\.")[1] + ".json")) {
 				file.write(obj.toJSONString());
 				System.out.println("Successfully Copied JSON Object to File...");
 				System.out.println("\nJSON Object: " + obj);

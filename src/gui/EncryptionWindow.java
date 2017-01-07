@@ -9,6 +9,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
@@ -104,16 +106,14 @@ public class EncryptionWindow {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("début crypto");
-				
-				
+
 				if (passwordTextField.getText() != null)
 					password = passwordTextField.getText();
 
-
 				// Créer le fichier json
-				//if (Main.model != null) {
+				// if (Main.model != null) {
 				if (model != null) {
-					//imageModel = Main.model;
+					// imageModel = Main.model;
 
 					// String filename = imageModel.getImage().;
 					BufferedImage image = model.getImage();
@@ -126,12 +126,13 @@ public class EncryptionWindow {
 					// concatene les pixels rgb
 					String rgbString = rgbtoString(rgbs, image.getWidth(), image.getHeight());
 					System.out.println(rgbString);
-					
+
 					// avec RSA, mdp -> cle session KEYGENERATOR ou SECRETKEY ?
 					SecretKey aesKey = null;
 					try {
 						aesKey = encryptionPassword(password);
-					} catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeySpecException e3) {
+					} catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeySpecException
+							| InvalidKeyException | InvalidAlgorithmParameterException e3) {
 						e3.printStackTrace();
 					}
 
@@ -184,8 +185,9 @@ public class EncryptionWindow {
 
 					try {
 						// Getting filePath and fileName from MainWindow
-						//imageModelJSON.writeImageModelJSONFile(Main.filePath, Main.fileName, password, encryptedString);
-						imageModelJSON.writeImageModelJSONFile(path, fileName, password, encryptedString);
+						// imageModelJSON.writeImageModelJSONFile(Main.filePath,
+						// Main.fileName, password, encryptedString);
+						imageModelJSON.writeImageModelJSONFile(path, fileName, aesKey.toString(), encryptedString);
 					} catch (IOException e1) {
 						e1.printStackTrace();
 					}
@@ -257,15 +259,23 @@ public class EncryptionWindow {
 	 * } catch (Exception ex) { ex.printStackTrace(); } }
 	 */
 
-	private SecretKey encryptionPassword(String password) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeySpecException {
+	private SecretKey encryptionPassword(String password) throws NoSuchAlgorithmException, NoSuchPaddingException,
+			InvalidKeySpecException, InvalidKeyException, InvalidAlgorithmParameterException {
+		KeyGenerator kgen = KeyGenerator.getInstance("AES");
+		kgen.init(128);
+		SecretKey aesKey = kgen.generateKey();
+		return aesKey;
+		/*
 		SecretKeyFactory keyFact = SecretKeyFactory.getInstance("PBEWithMD5AndDES");
 		Cipher cipher = Cipher.getInstance("PBEWithMD5AndDES");
-		byte[] salt = new byte[] { 0x7d, 0x60, 0x43, 0x5f, 0x02, (byte) 0xe9, (byte) 0xe0, (byte) 0xae };
-	    int iterationCount = 2048;
+		byte[] salt = {(byte)0xA9, (byte)0x9B, (byte)0xC8, (byte)0x32,(byte)0x56, (byte)0x34, (byte)0xE3, (byte)0x03};
+		int iterationCount = 2048;
 		PBEParameterSpec pSpecs = new PBEParameterSpec(salt, iterationCount);
 		PBEKeySpec kSpecs = new PBEKeySpec(password.toCharArray());
 		SecretKey key = keyFact.generateSecret(kSpecs);
+		cipher.init(Cipher.ENCRYPT_MODE, key, pSpecs);
 		return key;
+		*/
 	}
 
 	// TODO
