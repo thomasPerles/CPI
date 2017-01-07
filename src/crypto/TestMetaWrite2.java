@@ -77,22 +77,20 @@ public class TestMetaWrite2
 		else if (os.indexOf("nix") >= 0 || os.indexOf("nux") >= 0 || os.indexOf("aix") > 0)
 		{ // UNIX-LINUX
 			try
-			{
-				String command = "cd " + imageFolder + " && cat " + jsonName + " json.zip > " + imageName;
-				Process p;
+			{	
+				String command = "cd " + imageFolder + " && cat " + imageName + " json.zip > " + imageName;
 				String s;
-				p = Runtime.getRuntime().exec(command);
-				BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
-				while ((s = br.readLine()) != null)
-					System.out.println("line: " + s);
-				p.waitFor();
-				System.out.println("exit: " + p.exitValue());
-				p.destroy();
-
-			}
-			catch (Exception ex)
-			{
-			}
+		        Process p;
+		        try {
+		        	p = Runtime.getRuntime().exec(new String[]{"/bin/sh", "-c", command});
+		            BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
+		            while ((s = br.readLine()) != null)
+		                System.out.println("line: " + s); //Sortie de la commande
+		            p.waitFor();
+		            System.out.println ("exit: " + p.exitValue());//Code de sortie de la commande
+		            p.destroy();
+		        } catch (Exception e) {}
+			}catch (Exception ex){}
 		}
 		else
 		{
@@ -115,7 +113,7 @@ public class TestMetaWrite2
 		File zipFile1 = new File(imageFolder+name+".zip");
 		imgFile.renameTo(zipFile1);
 
-		// récupérer le contenu du zip (un json) et le copier à part
+		// recuperer le contenu du zip (un json) et le copier a part
 		// http://stackoverflow.com/questions/15667125/read-content-from-files-which-are-inside-zip-file
 		ZipFile zipFile;
 		try
@@ -181,9 +179,8 @@ public class TestMetaWrite2
 	{
 		// MAIN DE TEST !!
 		TestMetaWrite2 test = new TestMetaWrite2();
-		// test.hideZipInImage("C:/Users/Flav/git/CPI/res-test/","TEST.bmp");
-		test.hideZipInImage("res-test/", "TEST.jpg","res-test/","oneTexte.json");
-		test.findZipInImage("res-test/", "TEST.jpg");
+		test.hideZipInImage("res-test/test/", "TEST.bmp","res-test/test/","oneTexte.json");
+		test.findZipInImage("res-test/test/", "TEST.bmp");
 	}
 
 }
