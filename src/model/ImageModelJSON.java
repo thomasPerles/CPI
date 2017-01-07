@@ -54,11 +54,12 @@ public class ImageModelJSON {
 		 return null;
 	 }
 	 
-	 public void writeImageModelJSONFile(String filePath, String fileName, String password) throws IOException {
+	 public void writeImageModelJSONFile(String filePath, String fileName, String password, String encryptedString) throws IOException {
 		 JSONObject obj = new JSONObject();
 			obj.put("filePath", filePath);
 			obj.put("fileName", fileName);
 			obj.put("password", password);
+			obj.put("encryptedString", encryptedString);
 	 
 			// try-with-resources statement based on post comment below :)
 			try (FileWriter file = new FileWriter("res-test/"+ fileName +".json")) {

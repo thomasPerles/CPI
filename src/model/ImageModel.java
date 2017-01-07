@@ -18,7 +18,7 @@ public class ImageModel {
 	private DataBuffer data;
 
 	public ImageModel() {
-
+		image = new BufferedImage(344, 455, BufferedImage.TYPE_INT_RGB);
 	}
 
 	public ImageModel(String path) {
