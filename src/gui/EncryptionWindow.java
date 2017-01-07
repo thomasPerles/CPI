@@ -40,6 +40,9 @@ public class EncryptionWindow {
 	private ArrayList<Rectangle> rectangles;
 	private String password;
 	private ImageModelJSON imageModelJSON;
+	private ImageModel model;
+	private String fileName;
+	private String path;
 
 	public void setVisible(boolean state) {
 		frame.setVisible(state);
@@ -50,7 +53,10 @@ public class EncryptionWindow {
 	 * 
 	 * @param view
 	 */
-	public EncryptionWindow(ImageView view) {
+	public EncryptionWindow(ImageView view, String fileName, String path, ImageModel model) {
+		this.fileName = fileName;
+		this.path = path;
+		this.model = model;
 		this.view = view;
 		this.rectangles = this.view.getRectangles();
 		this.imageModelJSON = new ImageModelJSON();
@@ -103,15 +109,14 @@ public class EncryptionWindow {
 				if (passwordTextField.getText() != null)
 					password = passwordTextField.getText();
 
-				ImageModel imageModel = new ImageModel();
 
 				// Créer le fichier json
 				//if (Main.model != null) {
-				if (imageModel != null) {
+				if (model != null) {
 					//imageModel = Main.model;
 
 					// String filename = imageModel.getImage().;
-					BufferedImage image = imageModel.getImage();
+					BufferedImage image = model.getImage();
 
 					// TODO
 					// pixels selectionnes dans la matrice
@@ -180,7 +185,7 @@ public class EncryptionWindow {
 					try {
 						// Getting filePath and fileName from MainWindow
 						//imageModelJSON.writeImageModelJSONFile(Main.filePath, Main.fileName, password, encryptedString);
-						imageModelJSON.writeImageModelJSONFile("filePath", "fileName", password, encryptedString);
+						imageModelJSON.writeImageModelJSONFile(path, fileName, password, encryptedString);
 					} catch (IOException e1) {
 						e1.printStackTrace();
 					}
