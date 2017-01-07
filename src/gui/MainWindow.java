@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -45,7 +46,6 @@ public class MainWindow {
 
 	private final int xOffset = 25;
 	private final int yOffset = 25;
-	private Rectangle originalBounds;
 
 	/**
 	 * Create the application.
@@ -81,8 +81,8 @@ public class MainWindow {
 
 		int original_width = model.getImage().getWidth();
 		int original_height = model.getImage().getHeight();
-		int bound_width = originalBounds.width - 2 * this.xOffset;
-		int bound_height = originalBounds.height - 2 * this.yOffset;
+		int bound_width = this.imagePortal.getWidth() - 2 * this.xOffset;
+		int bound_height = this.imagePortal.getHeight() - 2 * this.yOffset;
 		int new_width = original_width;
 		int new_height = original_height;
 
@@ -102,15 +102,15 @@ public class MainWindow {
 			new_width = (new_height * original_width) / original_height;
 		}
 		
-		this.view.setBounds((int) ((double) originalBounds.getWidth() / 2 - (double) new_width / 2),
-				(int) ((double) originalBounds.getHeight() / 2 - (double) new_height / 2), new_width,
+		this.view.setBounds((int) ((double) this.imagePortal.getWidth() / 2 - (double) new_width / 2),
+				(int) ((double) this.imagePortal.getHeight() / 2 - (double) new_height / 2), new_width,
 				new_height);
 	}
 
 	private void updateImageModel(File file) {
-
+		
+		this.view.setRectangles(new ArrayList<Rectangle>());
 		this.model.loadByPixel(file.getAbsolutePath());
-		originalBounds = view.getBounds();
 		checkBounds();
 		this.view.repaint();
 
@@ -144,7 +144,8 @@ public class MainWindow {
 		Container pane = frame.getContentPane();
 		pane.setLayout(new BorderLayout());
 		this.imagePortal = new JPanel();
-		pane.add(view, BorderLayout.CENTER);
+		this.imagePortal.add(this.view);
+		pane.add(imagePortal, BorderLayout.CENTER);
 		this.buttons = new JPanel();
 		buttons.setLayout(new GridLayout(1, 6));
 		
