@@ -120,4 +120,12 @@ public class ImageView extends Canvas implements Runnable {
 			throw new Exception("Cannot remove non-existent rectangle!");
 	}
 
+	public void setRectangles(ArrayList<Rectangle> rectangles)
+	{
+		this.rectangles = rectangles;
+		if(rectangles == null) {
+			this.selectedRect = null;
+			this.selectingRectangles = false;
+		}
+	}
 }
