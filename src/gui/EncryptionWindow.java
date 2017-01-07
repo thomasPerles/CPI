@@ -1,5 +1,6 @@
 package gui;
 
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -121,10 +122,12 @@ public class EncryptionWindow {
 					// TODO
 					// pixels selectionnes dans la matrice
 					// pixels en RGB originaux
-					int[][] rgbs = getRGB(image);
+					//int[][] rgbs = getRGB(image);
 
 					// concatene les pixels rgb
-					String rgbString = rgbtoString(rgbs, image.getWidth(), image.getHeight());
+					//String rgbString = rgbtoString(rgbs, image.getWidth(), image.getHeight());
+					
+					String rgbString = getRGBToString(image);
 					System.out.println(rgbString);
 
 					// avec RSA, mdp -> cle session KEYGENERATOR ou SECRETKEY ?
@@ -138,7 +141,7 @@ public class EncryptionWindow {
 
 					// avec AES et cle de session, crypte les donnees de limage
 					// (=vecteur rgbs)
-					byte[] encryptedBytes = encryptionData(aesKey, rgbs, image);
+					byte[] encryptedBytes = encryptionData(aesKey, rgbString, image);
 
 					// stocker le vecteur et la cle de session dans le json
 					String encryptedString = convert(encryptedBytes);
@@ -175,22 +178,24 @@ public class EncryptionWindow {
 					 */
 
 					// recrée l'image avec les RGB originaux
-					File outputfile = new File("saved.jpg");
+					/*File outputfile = new File("saved.jpg");
 					try {
 						ImageIO.write(createBufferedImage(rgbs, image.getWidth(), image.getHeight()), "jpg",
 								outputfile);
 					} catch (IOException e2) {
 						e2.printStackTrace();
-					}
+					}*/
 
 					try {
 						// Getting filePath and fileName from MainWindow
 						// imageModelJSON.writeImageModelJSONFile(Main.filePath,
 						// Main.fileName, password, encryptedString);
-						imageModelJSON.writeImageModelJSONFile(path, fileName, aesKey.toString(), encryptedString);
+						imageModelJSON.writeImageModelJSONFile(path, fileName, convert(aesKey.getEncoded()), encryptedString);
 					} catch (IOException e1) {
 						e1.printStackTrace();
 					}
+					
+					//TODO : CACHER LE JSON !!!!!
 				}
 
 				// TODO
@@ -288,8 +293,15 @@ public class EncryptionWindow {
 		return s;
 	}
 
-	private byte[] encryptionData(SecretKey aesKey, int[][] rgbs, BufferedImage image) {
-		String s = rgbtoString(rgbs, image.getWidth(), image.getHeight());
+	/**
+	 * 
+	 * @param aesKey
+	 * @param rgbString
+	 * @param image
+	 * @return
+	 */
+	private byte[] encryptionData(SecretKey aesKey, String rgbString, BufferedImage image) {
+		String s = rgbString;//rgbtoString(rgbString, image.getWidth(), image.getHeight());
 		byte[] encryptedBytes = null;
 		try {
 			// Encrypt cipher
@@ -307,7 +319,7 @@ public class EncryptionWindow {
 		}
 		return encryptedBytes;
 	}
-
+/*
 	public String rgbtoString(int[][] rgbs, int width, int height) {
 		String res = "";
 		for (int i = 0; i < width; i++) {
@@ -331,6 +343,35 @@ public class EncryptionWindow {
 		}
 		return rgbs;
 	}
+*/	
+	/**
+	 * description de la fct
+	 * @param image
+	 * desciption de l'argument "image"
+	 * @return 
+	 * String //ça retourne quoi ? 
+	 */
+	public String getRGBToString(BufferedImage image) {
+		String res = "";
+		for (int i = 0; i < image.getWidth(); i++) {
+			for (int j = 0; j < image.getHeight(); j++) {
+				boolean isIn = false;
+				for (Rectangle r : rectangles) {
+					if (r.contains(new Point(i, j))) {
+						isIn = true;
+						break;
+					}
+				}
+				if (isIn) {
+					// mettre les pixels random   ???????????????????????
+					res += String.valueOf(image.getRGB(i, j)); 
+				}
+				else res += "/";
+			}
+		}
+		return res;
+	}
+	
 
 	public static BufferedImage createBufferedImage(int[][] rgbs, int width, int height) {
 		BufferedImage buff = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
