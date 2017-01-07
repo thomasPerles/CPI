@@ -165,8 +165,10 @@ public class MainWindow {
 					} catch (IOException e) {
 					}
 					pw.close();
-					Main.filePath = file.getAbsolutePath();
-					Main.fileName = file.getName();
+					
+					// TODO getting filePath and fileName and give it to Encription window
+					/*Main.filePath = file.getAbsolutePath();
+					Main.fileName = file.getName();*/
 					updateImageModel(file);
 				}
 			}

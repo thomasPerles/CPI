@@ -11,16 +11,13 @@ import view.ImageView;
 
 public class Main {
 
-	public static ImageModel model;
-	public static String fileName, filePath;
-	
 	public static void main(String[] args) {
 
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
 
-					model = new ImageModel();
+					ImageModel model = new ImageModel();
 					ImageView view = new ImageView(model);
 
 					// Desactiver les fonctionalites d'interaction tant qu'une
@@ -41,5 +38,5 @@ public class Main {
 		});
 
 	}
-
+	
 }
