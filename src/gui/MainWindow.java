@@ -25,6 +25,7 @@ import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 
 import controller.WindowController;
+import main.Main;
 import model.ImageModel;
 import view.ImageView;
 
@@ -43,6 +44,8 @@ public class MainWindow {
 	private ImageModel model;
 	private ImageView view;
 	private WindowController wcontroller;
+	
+	private String fileName, path;
 
 	private final int xOffset = 25;
 	private final int yOffset = 25;
@@ -78,33 +81,35 @@ public class MainWindow {
 	 * l'affichage
 	 */
 	private void checkBounds() {
+		if(model.getImage() != null)
+		{
+			int original_width = model.getImage().getWidth();
+			int original_height = model.getImage().getHeight();
+			int bound_width = this.imagePortal.getWidth() - 2 * this.xOffset;
+			int bound_height = this.imagePortal.getHeight() - 2 * this.yOffset;
+			int new_width = original_width;
+			int new_height = original_height;
 
-		int original_width = model.getImage().getWidth();
-		int original_height = model.getImage().getHeight();
-		int bound_width = this.imagePortal.getWidth() - 2 * this.xOffset;
-		int bound_height = this.imagePortal.getHeight() - 2 * this.yOffset;
-		int new_width = original_width;
-		int new_height = original_height;
+			// first check if we need to scale width
+			if (original_width > bound_width) {
+				// scale width to fit
+				new_width = bound_width;
+				// scale height to maintain aspect ratio
+				new_height = (new_width * original_height) / original_width;
+			}
 
-		// first check if we need to scale width
-		if (original_width > bound_width) {
-			// scale width to fit
-			new_width = bound_width;
-			// scale height to maintain aspect ratio
-			new_height = (new_width * original_height) / original_width;
+			// then check if we need to scale even with the new height
+			if (new_height > bound_height) {
+				// scale height to fit instead
+				new_height = bound_height;
+				// scale width to maintain aspect ratio
+				new_width = (new_height * original_width) / original_height;
+			}
+			
+			this.view.setBounds((int) ((double) this.imagePortal.getWidth() / 2 - (double) new_width / 2),
+					(int) ((double) this.imagePortal.getHeight() / 2 - (double) new_height / 2), new_width,
+					new_height);
 		}
-
-		// then check if we need to scale even with the new height
-		if (new_height > bound_height) {
-			// scale height to fit instead
-			new_height = bound_height;
-			// scale width to maintain aspect ratio
-			new_width = (new_height * original_width) / original_height;
-		}
-		
-		this.view.setBounds((int) ((double) this.imagePortal.getWidth() / 2 - (double) new_width / 2),
-				(int) ((double) this.imagePortal.getHeight() / 2 - (double) new_height / 2), new_width,
-				new_height);
 	}
 
 	private void updateImageModel(File file) {
@@ -164,6 +169,10 @@ public class MainWindow {
 					} catch (IOException e) {
 					}
 					pw.close();
+					
+					// getting filePath and fileName and give it to Encription window
+					path = file.getAbsolutePath();
+					fileName = file.getName();
 					updateImageModel(file);
 				}
 			}
@@ -173,7 +182,7 @@ public class MainWindow {
 		JButton btnEncrypt = new JButton("Encrypt");
 		btnEncrypt.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				EncryptionWindow ew = new EncryptionWindow(view);
+				EncryptionWindow ew = new EncryptionWindow(view, fileName, path, model);
 				ew.setVisible(true);
 			}
 		});
