@@ -20,8 +20,8 @@ public class Main {
 					ImageModel model = new ImageModel();
 					ImageView view = new ImageView(model);
 
-					// D�sactiver les fonctionalit�s d'int�raction tant qu'une
-					// image n'est pas charg�e
+					// Desactiver les fonctionalites d'interaction tant qu'une
+					// image n'est pas chargee
 					NewZoneImageController nziController = new NewZoneImageController();
 					SelectZoneImageController sziController = new SelectZoneImageController();
 

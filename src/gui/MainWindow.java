@@ -172,7 +172,7 @@ public class MainWindow {
 		JButton btnEncrypt = new JButton("Encrypt");
 		btnEncrypt.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				EncryptionWindow ew = new EncryptionWindow();
+				EncryptionWindow ew = new EncryptionWindow(view);
 				ew.setVisible(true);
 			}
 		});
