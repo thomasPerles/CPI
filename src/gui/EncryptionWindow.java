@@ -103,11 +103,12 @@ public class EncryptionWindow {
 				if (passwordTextField.getText() != null)
 					password = passwordTextField.getText();
 
-				ImageModel imageModel;
+				ImageModel imageModel = new ImageModel();
 
 				// Créer le fichier json
-				if (Main.model != null) {
-					imageModel = Main.model;
+				//if (Main.model != null) {
+				if (imageModel != null) {
+					//imageModel = Main.model;
 
 					// String filename = imageModel.getImage().;
 					BufferedImage image = imageModel.getImage();
@@ -177,7 +178,9 @@ public class EncryptionWindow {
 					}
 
 					try {
-						imageModelJSON.writeImageModelJSONFile(Main.filePath, Main.fileName, password, encryptedString);
+						// Getting filePath and fileName from MainWindow
+						//imageModelJSON.writeImageModelJSONFile(Main.filePath, Main.fileName, password, encryptedString);
+						imageModelJSON.writeImageModelJSONFile("filePath", "fileName", password, encryptedString);
 					} catch (IOException e1) {
 						e1.printStackTrace();
 					}
