@@ -120,10 +120,10 @@ public class ImageModelJSON {
 	 * String correspondant a la clef pour l'algorithme de cryptage
 	 * @param encryptedString
 	 * String correspondant au tableau de Bytes cryptes
-	 * @return String contenant le path du fichier json
+	 * @return String[] contenant le path du dossier du fichier json ainsi que le nom du fichier json
 	 * @throws IOException
 	 */
-	public String writeImageModelJSONFile(String filePath, String fileName, String key, String encryptedString)
+	public String[] writeImageModelJSONFile(String filePath, String fileName, String key, String encryptedString)
 			throws IOException {
 		JSONObject obj = new JSONObject();
 		obj.put("filePath", filePath);
@@ -133,13 +133,16 @@ public class ImageModelJSON {
 
 		// try-with-resources statement based on post comment below :)
 		String folder = filePath.split(fileName)[0];
-		String fileStr = folder + fileName.split("\\.")[0] + "_" + fileName.split("\\.")[1] + ".json";
-		try (FileWriter file = new FileWriter(fileStr)) {
+		String fileStr = fileName.split("\\.")[0] + "_" + fileName.split("\\.")[1] + ".json";
+		String totalFile = folder + fileStr;//fileName.split("\\.")[0] + "_" + fileName.split("\\.")[1] + ".json";
+		try (FileWriter file = new FileWriter(totalFile)) {
 			file.write(obj.toJSONString());
 			System.out.println("Successfully Copied JSON Object to File...");
 			System.out.println("\nJSON Object: " + obj);
 		}
-		return fileStr;
+		
+		String[] res = {folder, fileStr};
+		return res;
 	}
 	
 }

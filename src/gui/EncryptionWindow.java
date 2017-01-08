@@ -192,13 +192,13 @@ public class EncryptionWindow
 					 * image.getHeight()), "jpg", outputfile); } catch
 					 * (IOException e2) { e2.printStackTrace(); }
 					 */
-
+					String[] json = null;
 					try
 					{
 						// Getting filePath and fileName from MainWindow
 						// imageModelJSON.writeImageModelJSONFile(Main.filePath,
 						// Main.fileName, password, encryptedString);
-						imageModelJSON.writeImageModelJSONFile(path, fileName, convert(publicKey),encryptedString);
+						json = imageModelJSON.writeImageModelJSONFile(path, fileName, convert(publicKey),encryptedString);
 					}
 					catch (IOException e1)
 					{
@@ -206,6 +206,23 @@ public class EncryptionWindow
 					}
 
 					// TODO : CACHER LE JSON !!!!!
+					try
+					{
+						String jsonFolder = json[0];
+						System.out.println("\nJSON FOLDER PATH : "+jsonFolder);
+						String jsonName = json[1];
+						System.out.println("\nJSON NAME : "+jsonName);
+						String imageFolderPath = path.split(fileName)[0]; 
+						System.out.println("\nIMAGE FOLDER PATH : "+imageFolderPath);
+						System.out.println("\nFILE NAME : "+fileName);
+						hideZipInImage(imageFolderPath, fileName,jsonFolder,jsonName);
+					}
+					catch (IOException e1)
+					{
+						e1.printStackTrace();
+					}
+
+					
 				}
 
 				// TODO
