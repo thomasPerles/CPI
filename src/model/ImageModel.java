@@ -157,4 +157,19 @@ public class ImageModel {
 		this.wRaster = (WritableRaster) image.getData();
 		this.data = image.getData().getDataBuffer();
 	}
+	
+	public void rebuildImage(String string)
+	{
+		String[] pixels = string.split("/");
+		for(int i = 0; i < pixels.length; i++)
+		{
+			int height = i / image.getWidth();
+			
+			if(!pixels[i].equals("0"))
+			{
+				image.setRGB(i % image.getWidth(), height, Integer.parseInt(pixels[i]));
+			}
+				
+		}
+	}
 }
