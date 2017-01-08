@@ -25,17 +25,28 @@ public class ImageModel {
 	public ImageModel(String path) {
 		loadByPixel(path);
 	}
-
+	
+	/**
+	 * Enregistre l'image
+	 * @param file
+	 * String : fichier a sauver (dont extension)
+	 * @param extension
+	 * String : extension du fichier (ex. bmp, png, ...) 
+	 */
 	public void saveIMG(String file, String extension) {
 		try {
 			//ImageIO.write((RenderedImage) image, extension, new File(file.split("\\."+extension)[0]+"test."+extension));
 			ImageIO.write(image, extension.toUpperCase(), new File(file));//.split("\\."+extension)[0]+"1"+"."+extension));
-			System.out.println("FILE TO SAVE : "+file);//.split("\\."+extension)[0]+"1"+"."+extension);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
+	/**
+	 * Cree un BufferedImage a partir de l'image passee en parametre
+	 * @param fileName
+	 * String : image a importer
+	 */
 	public void loadByPixel(String fileName) {
 		File file = new File(fileName);
 		try {
@@ -57,7 +68,18 @@ public class ImageModel {
 		}
 
 	}
-
+	
+	/**
+	 * Pixelise le rectangle indique dans l'image
+	 * @param x 
+	 * int : coordonee X du rectangle 
+	 * @param width
+	 * int : largeur du rectangle
+	 * @param y
+	 * int : coordonee Y du rectangle 
+	 * @param height
+	 * int : hauteur du rectangle
+	 */
 	public void pixelateImage(int x, int width, int y, int height) {
 		Random rand = new Random();
 		for (int i = x; i < width + x; i++)
@@ -69,6 +91,11 @@ public class ImageModel {
 			}
 	}
 	
+	/**
+	 * Pixelise le rectangle indique dans l'image
+	 * @param rectangle
+	 * Rectangle : rectangle a pixeliser
+	 */
 	public void pixelateImage(Rectangle rectangle) {
 		Random rand = new Random();
 		for (int i = rectangle.x; i < rectangle.width + rectangle.x; i++)
@@ -86,7 +113,9 @@ public class ImageModel {
 				image.setRGB(i, j, p);
 			}
 	}
-
+	/**
+	 * Affiche le contenu de l'image
+	 */
 	public String toString() {
 		StringBuilder res = new StringBuilder();
 		res.append("\nImage properties:\n");
@@ -128,14 +157,4 @@ public class ImageModel {
 		this.wRaster = (WritableRaster) image.getData();
 		this.data = image.getData().getDataBuffer();
 	}
-
-	public String offsetToString() {
-		StringBuilder res = new StringBuilder('[');
-		for (int i = 0; i < data.getNumBanks(); i++) {
-			res.append(' ').append(data.getOffsets()[i]).append(' ');
-		}
-		res.append(' ');
-		return res.toString();
-	}
-
 }

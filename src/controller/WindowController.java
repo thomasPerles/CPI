@@ -28,6 +28,13 @@ public class WindowController implements ItemListener {
 		this.sziController = sziController;
 	}
 
+	/**
+	 * Adds a component to field "component"
+	 * @param name
+	 * String : name of the component
+	 * @param jc
+	 * JComponent : component
+	 */
 	public void addComponent(String name, JComponent jc) {
 		this.components.put(name, jc);
 	}

@@ -85,12 +85,14 @@ public class ImageView extends Canvas implements Runnable {
 		f.setVisible(true);
 		*/
 	}
+
 	
-	/*
-	 * Paint existing rectangles and selected rectangle.
-	 * 
-	 * Boolean parameter determines whether selected rectangle is being created
-	 * or has been selected, in which case its color will be Color.ORANGE.
+	/**
+	 * Affiche les rectangles selectionnes et existants
+	 * @param selectedRect
+	 * Rectangle : rectangle selectionne
+	 * @param selectingRectangles
+	 * Boolean : indique si le rectangle est en train d'etre cree ou s'il est selectionne
 	 */
 	public void paintRectangles(Rectangle selectedRect, Boolean selectingRectangles) {
 		this.selectedRect = selectedRect;
@@ -152,6 +154,9 @@ public class ImageView extends Canvas implements Runnable {
 	 * } System.out.println(rectangles); }
 	 */
 
+	/**
+	 * Affiche l'etat des rectangles par rapport a l'ecran
+	 */
 	public String toString() {
 		StringBuilder res = new StringBuilder();
 		for (Iterator<Rectangle> it = rectangles.iterator(); it.hasNext();) {
@@ -161,6 +166,10 @@ public class ImageView extends Canvas implements Runnable {
 		return res.toString();
 	}
 	
+	/**
+	 * Affiche la liste des rectangles adaptes aux dimensions de la fenetre
+	 * @return
+	 */
 	public String preparedRectanglesToString() {
 		StringBuilder res = new StringBuilder();
 		for(Iterator<Rectangle> it = preparedRectangles.iterator(); it.hasNext();)
@@ -179,9 +188,12 @@ public class ImageView extends Canvas implements Runnable {
 		return this.rectangles;
 	}
 
+	/**
+	 * Adapte les rectangles en fonction de la taille de la fenetre
+	 */
 	public void prepareRectangles() {
 		
-		System.out.println(toString());
+		//System.out.println(toString());
 		
 		preparedRectangles = new ArrayList<Rectangle>();
 		Rectangle preparedRectangle = null;
@@ -189,8 +201,8 @@ public class ImageView extends Canvas implements Runnable {
 		double resizeFactorX = (double) this.model.getImage().getWidth() / (double) this.getWidth();
 		double resizeFactorY = (double) this.model.getImage().getHeight() / (double) this.getHeight();
 		
-		System.out.println("Resize factor x : " + resizeFactorX);
-		System.out.println("Resize factor y : " + resizeFactorY);
+		//System.out.println("Resize factor x : " + resizeFactorX);
+		//System.out.println("Resize factor y : " + resizeFactorY);
 
 		for (Iterator<Rectangle> it = rectangles.iterator(); it.hasNext();) {
 			Rectangle rectangle = it.next();
@@ -201,6 +213,6 @@ public class ImageView extends Canvas implements Runnable {
 			preparedRectangles.add(preparedRectangle);
 		}
 		
-		System.out.println(preparedRectanglesToString());
+		//System.out.println(preparedRectanglesToString());
 	}
 }
