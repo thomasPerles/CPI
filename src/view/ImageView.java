@@ -2,75 +2,58 @@ package view;
 
 import java.awt.Canvas;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import javax.swing.JFrame;
-
-import controller.ImageController;
 import model.ImageModel;
 
 @SuppressWarnings("serial")
-public class ImageView extends Canvas implements Runnable
-{
+public class ImageView extends Canvas implements Runnable {
 
 	private ImageModel model;
-	private ArrayList<Rectangle> rectangles;
 	private Rectangle selectedRect;
 	private boolean selectingRectangles;
-	private double resizingFactorX;
-	private double resizingFactorY;
+	private ArrayList<Rectangle> rectangles;
+	private ArrayList<Rectangle> preparedRectangles;
 
-	public Rectangle getSelectedRect()
-	{
+	public Rectangle getSelectedRect() {
 		return selectedRect;
 	}
 
-	public void setSelectedRect(Rectangle selectedRect)
-	{
+	public void setSelectedRect(Rectangle selectedRect) {
 		this.selectedRect = selectedRect;
 	}
 
-	public boolean isSelectingRectangles()
-	{
+	public boolean isSelectingRectangles() {
 		return selectingRectangles;
 	}
 
-	public void setSelectingRectangles(boolean selectingRectangles)
-	{
+	public void setSelectingRectangles(boolean selectingRectangles) {
 		this.selectingRectangles = selectingRectangles;
 	}
 
-	public ImageView(ImageModel model)
-	{
+	public ImageView(ImageModel model) {
 		this.model = model;
-		this.rectangles = new ArrayList<Rectangle>();
 		this.selectingRectangles = false;
-		this.resizingFactorX = 1;
-		this.resizingFactorY = 1;
+		this.rectangles = new ArrayList<Rectangle>();
 	}
 
 	@Override
-	public void paint(Graphics g)
-	{
+	public void paint(Graphics g) {
 		super.paint(g);
 		g.drawImage(model.getImage(), 0, 0, this.getWidth(), this.getHeight(), this);
 
-		for (Iterator<Rectangle> it = rectangles.iterator(); it.hasNext();)
-		{
+		for (Iterator<Rectangle> it = rectangles.iterator(); it.hasNext();) {
 			Rectangle next = it.next();
-			if (next != null && next != selectedRect)
-			{
+			if (next != null && next != selectedRect) {
 				g.setColor(Color.LIGHT_GRAY);
 				g.fillRect(next.x, next.y, next.width, next.height);
 			}
 		}
 
-		if (selectedRect != null)
-		{
+		if (selectedRect != null) {
 			if (selectingRectangles)
 				g.setColor(Color.ORANGE);
 			else
@@ -80,14 +63,13 @@ public class ImageView extends Canvas implements Runnable
 
 	}
 
-	public void setModel(ImageModel model)
-	{
+	public void setModel(ImageModel model) {
 		this.model = model;
 	}
-
+	
 	@Override
-	public void run()
-	{
+	public void run() {
+		/*
 		JFrame f = new JFrame();
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setBounds(new Rectangle(0, 0, model.getImage().getWidth(), model.getImage().getHeight()));
@@ -96,102 +78,124 @@ public class ImageView extends Canvas implements Runnable
 		f.setAlwaysOnTop(true);
 		f.setLocationRelativeTo(this);
 		f.setVisible(true);
+		*/
 	}
-
+	
 	/*
 	 * Paint existing rectangles and selected rectangle.
 	 * 
 	 * Boolean parameter determines whether selected rectangle is being created
 	 * or has been selected, in which case its color will be Color.ORANGE.
 	 */
-	public void paintRectangles(Rectangle selectedRect, Boolean selectingRectangles)
-	{
+	public void paintRectangles(Rectangle selectedRect, Boolean selectingRectangles) {
 		this.selectedRect = selectedRect;
+		
 		if (selectingRectangles != this.selectingRectangles)
+		{
 			this.selectingRectangles = selectingRectangles;
+		}
+		
+		if(selectingRectangles)
+		{
+			ArrayList<Rectangle> temp = new ArrayList<Rectangle>();
+			for(Iterator<Rectangle> it = rectangles.iterator(); it.hasNext();)
+			{
+				Rectangle rectangle = it.next();
+				if(rectangle != selectedRect)
+					temp.add(rectangle);
+			}
+			temp.add(selectedRect);
+			this.rectangles = temp;
+		}
 		repaint();
 	}
 
-	/*
-	 * Paint selected rectangles of array in Color.GRAY, others in
-	 * Color.LIGHT_GRAY.
-	 */
-	public void paintRectangles(ArrayList<Rectangle> rectanglesToSelect)
-	{
-		this.selectingRectangles = true;
-		// TODO
-	}
-
-	public void incorporateRectangle()
-	{
-		this.rectangles.add(this.selectedRect);
+	public void incorporateRectangle() {
+		this.rectangles.add(selectedRect);
 		this.selectedRect = null;
 	}
 
-	public ArrayList<Rectangle> getRectangles()
-	{
-		return this.rectangles;
-	}
-
-	public void remove(Rectangle selectedRect) throws Exception
-	{
+	public void remove(Rectangle selectedRect) throws Exception {
 		if (this.rectangles.contains(selectedRect))
 			this.rectangles.remove(selectedRect);
 		else
 			throw new Exception("Cannot remove non-existent rectangle!");
 	}
-
-	public void setRectangles(ArrayList<Rectangle> rectangles)
-	{
-		this.rectangles = rectangles;
-		if (rectangles == null)
-		{
-			this.selectedRect = null;
-			this.selectingRectangles = false;
-		}
-	}
-
-	/**
+	/*
+	 * public void setResizingFactorX(int resizedWidth) {
 	 * 
-	 * @param resizingFactorX
+	 * double resizeFactorX = (double) oldWidth / (double) resizedWidth;
+	 * 
+	 * for (Iterator<Rectangle> it = this.rectangles.iterator(); it.hasNext();)
+	 * { Rectangle rectangle = it.next();
+	 * 
+	 * rectangle.setBounds((int) (rectangles.get(rectangle).x * resizeFactorX),
+	 * rectangle.y, (int) (rectangles.get(rectangle).width * resizeFactorX),
+	 * rectangle.height); } System.out.println(rectangles); }
+	 * 
+	 * public void setResizingFactorY(int resizedHeight) {
+	 * 
+	 * double resizeFactorY = (double) oldHeight / (double) resizedHeight;
+	 * 
+	 * for (Iterator<Rectangle> it = this.rectangles.iterator(); it.hasNext();)
+	 * { Rectangle rectangle = it.next();
+	 * 
+	 * rectangle.setBounds(rectangle.x, (int) (rectangles.get(rectangle).y *
+	 * resizeFactorY), rectangle.width, (int) (rectangles.get(rectangle).height
+	 * * resizeFactorY));
+	 * 
+	 * } System.out.println(rectangles); }
 	 */
-	public void setResizingFactorX(int resizedWidth)
-	{
-		int imageWidth = model.getImage().getWidth();
 
-		double resizeFactorX = (double) imageWidth / (double) resizedWidth;
-
-		for (Iterator<Rectangle> it = this.rectangles.iterator(); it.hasNext();)
+	public String toString() {
+		StringBuilder res = new StringBuilder();
+		for (Iterator<Rectangle> it = rectangles.iterator(); it.hasNext();) {
+			Rectangle rectangle = it.next();
+			res.append("Rectangle : ").append(rectangle).append('\n');
+		}
+		return res.toString();
+	}
+	
+	public String preparedRectanglesToString() {
+		StringBuilder res = new StringBuilder();
+		for(Iterator<Rectangle> it = preparedRectangles.iterator(); it.hasNext();)
 		{
 			Rectangle rectangle = it.next();
-			rectangle.x = (int) (rectangle.x * resizeFactorX);
-			rectangle.width = (int) (rectangle.width * resizeFactorX);
-			System.out.println(rectangle);
+			res.append("Prepared Rectangle : ").append(rectangle).append('\n');
 		}
+		return res.toString(); 
 	}
 
-	public void setResizingFactorY(int resizedHeight)
-	{
-		int imageHeight = model.getImage().getHeight();
+	public void setRectangles(ArrayList<Rectangle> rectangles) {
+		this.rectangles = rectangles;
+	}
 
-		double resizeFactorY = (double) imageHeight / (double) resizedHeight;
+	public ArrayList<Rectangle> getRectangles() {
+		return this.rectangles;
+	}
 
-		for (Iterator<Rectangle> it = this.rectangles.iterator(); it.hasNext();)
-		{
+	public void prepareRectangles() {
+		
+		System.out.println(toString());
+		
+		preparedRectangles = new ArrayList<Rectangle>();
+		Rectangle preparedRectangle = null;
+
+		double resizeFactorX = (double) this.model.getImage().getWidth() / (double) this.getWidth();
+		double resizeFactorY = (double) this.model.getImage().getHeight() / (double) this.getHeight();
+		
+		System.out.println("Resize factor x : " + resizeFactorX);
+		System.out.println("Resize factor y : " + resizeFactorY);
+
+		for (Iterator<Rectangle> it = rectangles.iterator(); it.hasNext();) {
 			Rectangle rectangle = it.next();
-			rectangle.y = (int) (rectangle.y * resizeFactorY);
-			rectangle.height = (int) (rectangle.height * resizeFactorY);
-			System.out.println(rectangle);
+			preparedRectangle = new Rectangle();
+			preparedRectangle.setBounds((int) (rectangle.x * resizeFactorX), (int) (rectangle.y * resizeFactorY),
+					(int) (rectangle.width * resizeFactorX), (int) (rectangle.height * resizeFactorY));
+			
+			preparedRectangles.add(preparedRectangle);
 		}
-	}
-
-	public double getResizingFactorX()
-	{
-		return this.resizingFactorX;
-	}
-
-	public double getResizingFactorY()
-	{
-		return this.resizingFactorY;
+		
+		System.out.println(preparedRectanglesToString());
 	}
 }

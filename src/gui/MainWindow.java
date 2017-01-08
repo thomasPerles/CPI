@@ -105,20 +105,27 @@ public class MainWindow {
 				new_width = (new_height * original_width) / original_height;
 			}
 			
+			// this.view.setOldWidth(this.view.getWidth());
+			// this.view.setOldHeight(this.view.getHeight());
+			
 			this.view.setBounds((int) ((double) this.imagePortal.getWidth() / 2 - (double) new_width / 2),
 					(int) ((double) this.imagePortal.getHeight() / 2 - (double) new_height / 2), new_width,
 					new_height);
 			
-			if(model.getImage().getWidth() != new_width)
+			this.view.setRectangles(new ArrayList<Rectangle>());
+			
+			// Ne marche pas
+			/*
+			if(this.view.getOldWidth() != new_width)
 				this.view.setResizingFactorX(new_width);
-			if(model.getImage().getHeight() != new_height)
+			if(this.view.getOldHeight() != new_height)
 				this.view.setResizingFactorY(new_height);
+			*/
 		}
 	}
 
 	private void updateImageModel(File file) {
 		
-		this.view.setRectangles(new ArrayList<Rectangle>());
 		this.model.loadByPixel(file.getAbsolutePath());
 		checkBounds();
 		this.view.repaint();
@@ -187,6 +194,7 @@ public class MainWindow {
 		btnEncrypt.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				EncryptionWindow ew = new EncryptionWindow(view, fileName, path, model);
+				view.prepareRectangles();
 				ew.setVisible(true);
 			}
 		});
@@ -243,7 +251,8 @@ public class MainWindow {
 		frame.setResizable(true);
 		frame.addComponentListener(new ComponentListener() {
 		    public void componentResized(ComponentEvent e) {
-		        checkBounds();        
+		        checkBounds();
+		        view.repaint();
 		    }
 
 			@Override

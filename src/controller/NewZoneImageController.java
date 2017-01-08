@@ -51,7 +51,6 @@ public class NewZoneImageController extends ImageController {
 				(int) selectedRect.getHeight());
 		*/
 		this.view.incorporateRectangle();
-		System.out.println(this.selectedRect);
 	}
 
 	@Override

@@ -5,33 +5,40 @@ import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.ListIterator;
 
 import view.ImageView;
 
 public class SelectZoneImageController extends ImageController {
 
-	private ArrayList<Rectangle> rectangles;
 	private Rectangle selectedRect;
 	private Point oldPoint;
+	private ArrayList<Rectangle> rectangles;
 
 	public SelectZoneImageController() {
 	}
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
+		rectangles = view.getRectangles();
 		Boolean rectangleSelected = false;
-		for (Iterator<Rectangle> it = rectangles.iterator(); it.hasNext();) {
+		for(Iterator<Rectangle> it = rectangles.iterator(); it.hasNext();)
+		{
 			Rectangle next = it.next();
 			if (next.contains(e.getPoint())) {
 				selectedRect = next;
 				rectangleSelected = true;
-				this.view.paintRectangles(selectedRect, true);
+				oldPoint = e.getPoint();
 			}
 		}
+		
 		if (!rectangleSelected) {
 			this.selectedRect = null;
 			this.view.paintRectangles(null, false);
+		} else {
+			this.view.paintRectangles(selectedRect, true);
 		}
 	}
 
@@ -49,19 +56,23 @@ public class SelectZoneImageController extends ImageController {
 
 	@Override
 	public void mousePressed(MouseEvent e) {
+		rectangles = view.getRectangles();
 		Boolean rectangleSelected = false;
-		for (Iterator<Rectangle> it = rectangles.iterator(); it.hasNext();) {
+		for(Iterator<Rectangle> it = rectangles.iterator(); it.hasNext();)
+		{
 			Rectangle next = it.next();
 			if (next.contains(e.getPoint())) {
 				selectedRect = next;
 				rectangleSelected = true;
-				this.view.paintRectangles(selectedRect, true);
 				oldPoint = e.getPoint();
 			}
 		}
+		
 		if (!rectangleSelected) {
 			this.selectedRect = null;
 			this.view.paintRectangles(null, false);
+		} else {
+			this.view.paintRectangles(selectedRect, true);
 		}
 	}
 
