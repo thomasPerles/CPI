@@ -3,9 +3,6 @@ package model;
 import java.awt.Color;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
-import java.awt.image.DataBuffer;
-import java.awt.image.RenderedImage;
-import java.awt.image.WritableRaster;
 import java.io.File;
 import java.io.IOException;
 import java.util.Random;
@@ -107,12 +104,6 @@ public class ImageModel {
 		res.append("\nImage properties:\n");
 		res.append(image);
 		res.append('\n');
-
-		/*
-		 * res.append("\nRaster properties:\n"); res.append(wRaster);
-		 * 
-		 * res.append("\nData:\n"); res.append(offsetToString());
-		 */
 
 		for (int i = 0; i < image.getHeight(); i++) {
 			res.append('[');
