@@ -46,7 +46,12 @@ public class EncryptionWindow {
 	private ImageModel model;
 	private String fileName;
 	private String path;
-
+	
+	/**
+	 * setVisible affiche ou cache la fenetre frame
+	 * @param state
+	 * boolean : true permet d'afficher la fenetre frame et false la cache 
+	 */
 	public void setVisible(boolean state) {
 		frame.setVisible(state);
 	}
@@ -110,23 +115,11 @@ public class EncryptionWindow {
 
 				if (passwordTextField.getText() != null)
 					password = passwordTextField.getText();
-
-				// Créer le fichier json
-				// if (Main.model != null) {
+				
 				if (model != null) {
-					// imageModel = Main.model;
-
-					// String filename = imageModel.getImage().;
 					BufferedImage image = model.getImage();
-
-					// TODO
-					// pixels selectionnes dans la matrice
-					// pixels en RGB originaux
-					//int[][] rgbs = getRGB(image);
-
-					// concatene les pixels rgb
-					//String rgbString = rgbtoString(rgbs, image.getWidth(), image.getHeight());
 					
+					// le String correspondant aux donnees a crypter 
 					String rgbString = getRGBToString(image);
 					System.out.println(rgbString);
 
@@ -141,7 +134,7 @@ public class EncryptionWindow {
 
 					// avec AES et cle de session, crypte les donnees de limage
 					// (=vecteur rgbs)
-					byte[] encryptedBytes = encryptionData(aesKey, rgbString, image);
+					byte[] encryptedBytes = encryptionData(aesKey, rgbString);
 
 					// stocker le vecteur et la cle de session dans le json
 					String encryptedString = convert(encryptedBytes);
@@ -161,21 +154,7 @@ public class EncryptionWindow {
 					// ...
 					// sauvegarder limage et supprimer le json
 
-					// TODO
-					/*
-					 * CRYPTAGE recuperer le mdp et limage avec RSA, mdp -> cle
-					 * session donnees de limage dans vecteur rgb avec AES et
-					 * cle de session, crypte les donnees de limage stocker le
-					 * vecteur et la cle de session dans le json si vecteur
-					 * crypte incompatible avec les donnees de limage, donnees
-					 * de limage deviennent random ... sauvegarder limage
-					 * cryptee
-					 * 
-					 * DECRYPTAGE recuperer le mdp et limage avec RSA, verifier
-					 * que le mdp = cle de session avec AES et cle de session,
-					 * decrypter le vecteur rgb dans json ou dans les donnees de
-					 * limage ... sauvegarder limage et supprimer le json
-					 */
+					
 
 					// recrée l'image avec les RGB originaux
 					/*File outputfile = new File("saved.jpg");
@@ -230,40 +209,20 @@ public class EncryptionWindow {
 
 		});
 	}
-
+	
 	// TODO
-	/*
-	 * protected void encryption(int[][] rgbs, BufferedImage image) { String s =
-	 * rgbtoString(rgbs, image.getWidth(), image.getHeight());
-	 * //System.out.println(s); try { // Generate key KeyGenerator kgen =
-	 * KeyGenerator.getInstance("AES"); kgen.init(128); SecretKey aesKey =
-	 * kgen.generateKey(); System.out.println(aesKey.toString()); // Encrypt
-	 * cipher Cipher encryptCipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
-	 * encryptCipher.init(Cipher.ENCRYPT_MODE, aesKey);
-	 * 
-	 * // Encrypt ByteArrayOutputStream outputStream = new
-	 * ByteArrayOutputStream(); CipherOutputStream cipherOutputStream = new
-	 * CipherOutputStream(outputStream, encryptCipher);
-	 * cipherOutputStream.write(s.getBytes()); cipherOutputStream.flush();
-	 * cipherOutputStream.close(); byte[] encryptedBytes =
-	 * outputStream.toByteArray(); System.out.println(encryptedBytes); //
-	 * Decrypt cipher Cipher decryptCipher =
-	 * Cipher.getInstance("AES/CBC/PKCS5Padding"); IvParameterSpec
-	 * ivParameterSpec = new IvParameterSpec(encryptCipher.getIV());
-	 * decryptCipher.init(Cipher.DECRYPT_MODE, aesKey, ivParameterSpec);
-	 * System.out.println(ivParameterSpec.toString()); // Decrypt outputStream =
-	 * new ByteArrayOutputStream(); ByteArrayInputStream inStream = new
-	 * ByteArrayInputStream(encryptedBytes); CipherInputStream cipherInputStream
-	 * = new CipherInputStream(inStream, decryptCipher); byte[] buf = new
-	 * byte[1024]; int bytesRead; while ((bytesRead =
-	 * cipherInputStream.read(buf)) >= 0) { outputStream.write(buf, 0,
-	 * bytesRead); }
-	 * 
-	 * System.out.println("Result: " + new String(outputStream.toByteArray()));
-	 * 
-	 * } catch (Exception ex) { ex.printStackTrace(); } }
+	/**
+	 * encryptionPassword genere une clef avec l'algorithme xxxxx en utilisant le password
+	 * @param password
+	 * String qui est crypte avec l'algorithme xxxx
+	 * @return
+	 * SecretKey aesKey la clef genere par l'algorithme xxxx depuis le password
+	 * @throws NoSuchAlgorithmException
+	 * @throws NoSuchPaddingException
+	 * @throws InvalidKeySpecException
+	 * @throws InvalidKeyException
+	 * @throws InvalidAlgorithmParameterException
 	 */
-
 	private SecretKey encryptionPassword(String password) throws NoSuchAlgorithmException, NoSuchPaddingException,
 			InvalidKeySpecException, InvalidKeyException, InvalidAlgorithmParameterException {
 		KeyGenerator kgen = KeyGenerator.getInstance("AES");
@@ -285,6 +244,13 @@ public class EncryptionWindow {
 
 	// TODO
 	// est-ce necessaire ???????????????????????????????????????????
+	/**
+	 * convert convertit le tableau de Bytes en String
+	 * @param encryptedBytes
+	 * bytes[] le tableau de Bytes a convertir
+	 * @return
+	 * String s la conversion du tableau de Bytes
+	 */
 	private String convert(byte[] encryptedBytes) {
 		String s = "";
 		for (int i = 0; i < encryptedBytes.length; i++) {
@@ -294,13 +260,15 @@ public class EncryptionWindow {
 	}
 
 	/**
-	 * 
+	 * encryptionData crypte le rgbString avec l'algorithme AES en utilisant la clef aesKey 
 	 * @param aesKey
+	 * SecretKey la clef utilisee lors de l'algorithme AES pour crypter rgbString
 	 * @param rgbString
-	 * @param image
+	 * String qui est crypte avec l'algorithme AES et aesKey
 	 * @return
+	 * byte[] encryptedBytes qui est le tableau de Bytes correspondant a rgbString crypte
 	 */
-	private byte[] encryptionData(SecretKey aesKey, String rgbString, BufferedImage image) {
+	private byte[] encryptionData(SecretKey aesKey, String rgbString) {
 		String s = rgbString;//rgbtoString(rgbString, image.getWidth(), image.getHeight());
 		byte[] encryptedBytes = null;
 		try {
@@ -319,37 +287,13 @@ public class EncryptionWindow {
 		}
 		return encryptedBytes;
 	}
-/*
-	public String rgbtoString(int[][] rgbs, int width, int height) {
-		String res = "";
-		for (int i = 0; i < width; i++) {
-			for (int j = 0; j < height; j++) {
-				res += String.valueOf(rgbs[i][j]);
-			}
-		}
-		return res;
-	}
-
-	public static int[][] getRGB(BufferedImage image) {
-		// System.out.println(image.getHeight() + " " + image.getWidth());
-		// System.out.println("rgb 1, 1 = " + image.getRGB(1, 1));
-		int[][] rgbs = new int[image.getWidth()][image.getHeight()];
-		for (int i = 0; i < image.getWidth(); i++) {
-			for (int j = 0; j < image.getHeight(); j++) {
-				// System.out.println("i = " + i + " j = " + j + " RGB = " +
-				// image.getRGB(i, j));
-				rgbs[i][j] = image.getRGB(i, j);
-			}
-		}
-		return rgbs;
-	}
-*/	
+	
 	/**
-	 * description de la fct
+	 * getRGBToString genere le String a crypter : "/" pour les pixels a ne pas crypter et la valeur en Bytes pour les pixels a crypter
 	 * @param image
-	 * desciption de l'argument "image"
+	 * BufferedImage l'image a crypter
 	 * @return 
-	 * String //ça retourne quoi ? 
+	 * String res correspondant aux donnees de l'image a crypter
 	 */
 	public String getRGBToString(BufferedImage image) {
 		String res = "";
@@ -372,7 +316,17 @@ public class EncryptionWindow {
 		return res;
 	}
 	
-
+	/**
+	 * createBufferedImage genere une image a partir d'un tableau de pixels et des dimensions de l'image
+	 * @param rgbs
+	 * int[][] le tableau de pixels de l'image
+	 * @param width
+	 * int la largeur de l'image
+	 * @param height
+	 * int la hauteur de l'image
+	 * @return
+	 * BufferedImage buff est l'image reconstituee avec les paramètres d'entree
+	 */
 	public static BufferedImage createBufferedImage(int[][] rgbs, int width, int height) {
 		BufferedImage buff = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 		for (int i = 0; i < width; i++) {
