@@ -32,7 +32,6 @@ public class NewZoneImageController extends ImageController {
 	public void mousePressed(MouseEvent arg0) {
 		this.start = arg0.getPoint();
 		this.selectedRect = new Rectangle(start.x, start.y, 0, 0);
-
 	}
 
 	@Override

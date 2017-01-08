@@ -24,6 +24,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 
+import controller.NewZoneImageController;
 import controller.WindowController;
 import model.ImageModel;
 import view.ImageView;
@@ -225,6 +226,17 @@ public class MainWindow {
 		btnSelectAll.setToolTipText("Select all image");
 		btnSelectAll.setEnabled(false);
 		buttons.add(btnSelectAll);
+		btnSelectAll.addActionListener(new ActionListener() {
+			//
+			public void actionPerformed(ActionEvent arg0) {
+				ArrayList<Rectangle> rectangle = new ArrayList<Rectangle>();
+				rectangle.add(new Rectangle(0,0,model.getImage().getWidth(),model.getImage().getHeight()));
+				//ImageView imgv = new ImageView(model);
+				view.setRectangles(rectangle);
+				view.repaint();
+			}
+			//
+		});
 
 		// Button to select zones
 		Icon mousePointer = new ImageIcon("res/mouse.png");
