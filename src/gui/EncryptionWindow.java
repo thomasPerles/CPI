@@ -165,10 +165,8 @@ public class EncryptionWindow {
 					KeyPairGenerator kpg;
 
 					try {
-						String xform = "RSA/NONE/PKCS1PADDING";
-
 						kpg = KeyPairGenerator.getInstance("RSA");
-						kpg.initialize(512); // 512 is the keysize.
+						kpg.initialize(512);
 						KeyPair kp = kpg.generateKeyPair();
 
 						PublicKey pubk = kp.getPublic();
@@ -176,7 +174,7 @@ public class EncryptionWindow {
 
 						byte[] dataBytes = aesKey.getEncoded();
 						// Creation du tableau d'octets chiffre par RSA
-						byte[] encBytes = encrypt(dataBytes, pubk, xform);
+						byte[] encBytes = encrypt(dataBytes, pubk, "RSA");
 
 						String sessionKey = convert(encBytes);
 						String privateKey = convert(prvk.getEncoded());

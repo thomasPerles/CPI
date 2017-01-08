@@ -55,7 +55,6 @@ public class ImageModelJSON {
 	 * @throws ParseException
 	 */
 	public String[] readImageFromJson(String file_Path, String file_Name) throws FileNotFoundException, IOException, ParseException {
-		String[] res = null;
 		JSONParser parser = new JSONParser();
 		String folder = file_Path.split(file_Name)[0];
 		String fileStr = folder + file_Name.split("\\.")[0] + "_" + file_Name.split("\\.")[1] + ".json";
@@ -64,16 +63,15 @@ public class ImageModelJSON {
 		JSONObject jsonObject = (JSONObject) obj;
 
 		String filePath = jsonObject.get("filePath").toString();
-		res[res.length] = filePath;
 		String fileName = jsonObject.get("fileName").toString();
-		res[res.length] = fileName;
-		String key = jsonObject.get("clef").toString();
-		res[res.length] = key;
+		String sessionKey = jsonObject.get("clef session").toString();
 		String encryptedString = jsonObject.get("encryptedString").toString();
-		res[res.length] = encryptedString;
-
+		String publicKey = jsonObject.get("clef session").toString();
+		String privateKey = jsonObject.get("clef session").toString();
+		
 		System.out.println("Successfully reading JSON Object...");
 		System.out.println("\nJSON Object: " + obj);
+		String[] res = {filePath, fileName, sessionKey, encryptedString, publicKey, privateKey};
 		return res;
 	}
 	
