@@ -11,6 +11,7 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.security.spec.KeySpec;
 import java.util.ArrayList;
 
 import javax.crypto.Cipher;
@@ -19,7 +20,9 @@ import javax.crypto.CipherOutputStream;
 import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -249,6 +252,18 @@ public class DecryptionWindow {
 		return null;
 	}
 
+	private SecretKey decryptionPassword(String password, SecretKey tmp) throws NoSuchAlgorithmException, InvalidKeySpecException
+	{
+		//char[] pswd = password.toCharArray();
+		//byte[] salt ={ (byte) 0xA9, (byte) 0x9B, (byte) 0xC8, (byte) 0x32, (byte) 0x56, (byte) 0x34, (byte) 0xE3, (byte) 0x03 };
+		//SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
+		//KeySpec spec = new PBEKeySpec(pswd, salt, 65536, 128);
+		SecretKey secret = new SecretKeySpec(tmp.getEncoded(), "AES");
+		return secret;
+	}
+	
+	
+	
 	/**
 	 * createBufferedImage genere une image a partir d'un tableau de pixels et des dimensions de l'image
 	 * @param rgbs
