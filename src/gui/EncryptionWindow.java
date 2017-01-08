@@ -12,6 +12,7 @@ import java.io.PrintWriter;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.crypto.Cipher;
 import javax.crypto.CipherOutputStream;
@@ -103,14 +104,14 @@ public class EncryptionWindow {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("début crypto");
+				System.out.println("dï¿½but crypto");
 				
 				
 				if (passwordTextField.getText() != null)
 					password = passwordTextField.getText();
 
 
-				// Créer le fichier json
+				// Crï¿½er le fichier json
 				//if (Main.model != null) {
 				if (model != null) {
 					//imageModel = Main.model;
@@ -173,7 +174,7 @@ public class EncryptionWindow {
 					 * limage ... sauvegarder limage et supprimer le json
 					 */
 
-					// recrée l'image avec les RGB originaux
+					// recrï¿½e l'image avec les RGB originaux
 					File outputfile = new File("saved.jpg");
 					try {
 						ImageIO.write(createBufferedImage(rgbs, image.getWidth(), image.getHeight()), "jpg",
