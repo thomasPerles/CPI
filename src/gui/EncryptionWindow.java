@@ -43,6 +43,7 @@ import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.PBEParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
@@ -182,10 +183,12 @@ public class EncryptionWindow {
 						// avec AES et cle de session, crypte les donnees de
 						// limage
 						// (=vecteur rgbs)
-						byte[] encryptedBytes = encryptionData(aesKey, rgbString);
-
+						// byte[] encryptedBytes = encryptionData(aesKey, rgbString);
+						
 						// stocker le vecteur et la cle de session dans le json
-						String encryptedString = convert(encryptedBytes);
+						//String encryptedString = convert(encryptedBytes);
+						String initVector = "RandomInitVector";
+						String encryptedString = newEncrypt(password, initVector, rgbString, aesKey);
 						//System.out.println("avant JSON, encryptedString" + encryptedString);
 						// recree l'image avec les RGB originaux
 						/*
@@ -259,6 +262,7 @@ public class EncryptionWindow {
 				 */
 				frame.setVisible(false);
 				frame.dispose();
+				view.repaint();
 			}
 
 		});
@@ -294,6 +298,24 @@ public class EncryptionWindow {
 		this.sessionKey = factory.generateSecret(spec);
 		SecretKey secret = new SecretKeySpec(sessionKey.getEncoded(), "AES");
 		return secret;
+	}
+	
+	public String newEncrypt(String key, String initVector, String value, SecretKey aesKey) {
+		try {
+			IvParameterSpec iv = new IvParameterSpec(initVector.getBytes("UTF-8"));
+
+			Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
+			cipher.init(Cipher.ENCRYPT_MODE, aesKey, iv);
+
+			byte[] encrypted = cipher.doFinal(value.getBytes());
+			System.out.println("encrypted string: " + org.apache.commons.codec.binary.Base64.encodeBase64String(encrypted));
+		
+			return org.apache.commons.codec.binary.Base64.encodeBase64String(encrypted);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+
+		return null;
 	}
 
 	// TODO : javadoc

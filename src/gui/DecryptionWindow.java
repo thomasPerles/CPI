@@ -159,18 +159,21 @@ public class DecryptionWindow {
 					SecretKey passWordKeyFromJson = new SecretKeySpec(encBytes, "AES");
 					String test2 = convert(passWordKeyFromJson);
 					String test = convert(passwordKey);
-					//System.out.println("sessionKey : " + test + "\npasswordKey : " + test2 + "\nequals : " + test.equals(test2));
+					// System.out.println("sessionKey : " + test + "\npasswordKey : " + test2 + "\nequals : " + test.equals(test2));
 					if(test.equals(test2))
 					{
-						byte[] encryptedStringBytes = Base64.getDecoder().decode(encryptedString);
-						String result = decryptionData(passwordKey, encryptedStringBytes);
-						System.out.println("test : " + test);
-						System.out.println("encryptedString : " + encryptedString);
+						// byte[] encryptedStringBytes = Base64.getDecoder().decode(encryptedString);
+						// String result = decryptionData(passwordKey, encryptedStringBytes);
+						String initVector = "RandomInitVector";
+						String result = newDecrypt(password, initVector, encryptedString, passwordKey);
+						// System.out.println("test : " + test);
+						// System.out.println("encryptedString : " + encryptedString);
 						System.out.println("result : " + result);
-						// model.rebuildImage(result);
+						model.rebuildImage(result);
+						view.repaint();
 						//System.out.println(path);
 						//System.out.println(fileName.split("\\.")[1]);
-						// model.saveIMG(path, fileName.split("\\.")[1]);
+						model.saveIMG(path, fileName.split("\\.")[1]);
 					}
 				} catch (NoSuchAlgorithmException | InvalidKeySpecException e2) {
 					e2.printStackTrace();
@@ -214,11 +217,28 @@ public class DecryptionWindow {
 				 * "Decryption successed")); else frame.setContentPane(new
 				 * ResultPanel(frame, "Decryption failed")); frame.revalidate();
 				 */
+				frame.setVisible(false);
+				frame.dispose();
 			}
 		});
 	}
 	
-	
+	public String newDecrypt(String key, String initVector, String encrypted, SecretKey aesKey) {
+		try {
+			IvParameterSpec iv = new IvParameterSpec(initVector.getBytes("UTF-8"));
+
+			Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
+			cipher.init(Cipher.DECRYPT_MODE, aesKey, iv);
+
+			byte[] original = cipher.doFinal(org.apache.commons.codec.binary.Base64.decodeBase64(encrypted));
+
+			return new String(original);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+
+		return null;
+	}
 	
 	
 	/**
@@ -455,7 +475,7 @@ public class DecryptionWindow {
 	 * @param height
 	 * int la hauteur de l'image
 	 * @return
-	 * BufferedImage buff est l'image reconstituee avec les paramètres d'entree
+	 * BufferedImage buff est l'image reconstituee avec les paramï¿½tres d'entree
 	 */
 	public static BufferedImage createBufferedImage(int[][] rgbs, int width, int height) {
 		BufferedImage buff = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
@@ -475,7 +495,7 @@ public class DecryptionWindow {
 	}
 	
 	/**
-	 * saveImage sauve l'image dans du paramètre bufferedImage
+	 * saveImage sauve l'image dans du paramï¿½tre bufferedImage
 	 * @param bufferedImage
 	 * BufferedImage bufferedImage l'image a sauve
 	 */

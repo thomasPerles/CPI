@@ -158,9 +158,12 @@ public class ImageModel {
 		this.data = image.getData().getDataBuffer();
 	}
 	
+	
+	
 	public void rebuildImage(String string)
 	{
 		String[] pixels = string.split("/");
+		
 		for(int i = 0; i < pixels.length; i++)
 		{
 			int height = i / image.getWidth();
@@ -171,5 +174,6 @@ public class ImageModel {
 			}
 				
 		}
+		
 	}
 }
