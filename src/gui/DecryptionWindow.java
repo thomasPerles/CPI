@@ -15,28 +15,20 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
+import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
-import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
+import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.CipherInputStream;
-import javax.crypto.CipherOutputStream;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.KeyGenerator;
-import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.IvParameterSpec;
@@ -64,6 +56,7 @@ public class DecryptionWindow {
 	private ImageModel model;
 	private String fileName;
 	private String path;
+	private SecretKey passwordKey;
 
 	/**
 	 * setVisible affiche ou cache la fenetre frame
@@ -142,18 +135,58 @@ public class DecryptionWindow {
 				String[] jsonString = null;
 				try {
 					jsonString = imageModelJSON.readImageFromJson(folder+"json.json", "json.json");
+				
 				} catch (IOException | ParseException e1) {
 					e1.printStackTrace();
 				}
 				String filePath = jsonString[0];
 				String file_Name = jsonString[1];
-				String key = jsonString[2];
-				String encryptedString = jsonString[3];
-				System.out.println("filePath : " + filePath + "\nfileName : " + file_Name + "\nkey : " + key + "\nencryptedString : " + encryptedString);
+				String encryptedString = jsonString[2];
+				String publicKey = jsonString[3];
+				String privateKey = jsonString[4];
+				String sessionKey = jsonString[5];
+				//System.out.println("filePath : " + filePath + "\nfileName : " + file_Name + "\nsessionKey : " + encryptedString + "\npublicKey : " + publicKey + "\nprivateKey : " + privateKey);
 
 				// avec RSA, verifier que le mdp = cle de session
-				SecretKey publicKey = convertStringToSecretKey(key);
-				SecretKey secretKey = encryptionPassword(password, publicKey);
+				try {
+					// passwordKey est une SecretKey
+					passwordKey = encryptionPassword(password);
+					byte[] privateKeyBytes = Base64.getDecoder().decode(privateKey);
+					KeyFactory kf = KeyFactory.getInstance("RSA");
+					PrivateKey pk = kf.generatePrivate(new PKCS8EncodedKeySpec(privateKeyBytes));
+					byte[] sessionKeyBytes = Base64.getDecoder().decode(sessionKey);
+					byte[] encBytes = decrypt(sessionKeyBytes, pk);
+					SecretKey passWordKeyFromJson = new SecretKeySpec(encBytes, "AES");
+					String test2 = convert(passWordKeyFromJson);
+					String test = convert(passwordKey);
+					//System.out.println("sessionKey : " + test + "\npasswordKey : " + test2 + "\nequals : " + test.equals(test2));
+					if(test.equals(test2))
+					{
+						byte[] encryptedStringBytes = Base64.getDecoder().decode(encryptedString);
+						String result = decryptionData(passwordKey, encryptedStringBytes);
+						System.out.println("test : " + test);
+						System.out.println("encryptedString : " + encryptedString);
+						System.out.println("result : " + result);
+						// model.rebuildImage(result);
+						//System.out.println(path);
+						//System.out.println(fileName.split("\\.")[1]);
+						// model.saveIMG(path, fileName.split("\\.")[1]);
+					}
+				} catch (NoSuchAlgorithmException | InvalidKeySpecException e2) {
+					e2.printStackTrace();
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				/*
+				byte[] dataBytes = passwordKey.getEncoded();
+				byte[] decodedKey = Base64.getDecoder().decode(dataBytes);
+				SecretKey originalKey = new SecretKeySpec(decodedKey, 0, decodedKey.length, "AES");
+				*/
+				/*
+				//SecretKey publicKey = convertStringToSecretKey(sessionKey);
+				SecretKey key = new SecretKeySpec(convert(publicKey), 0, convert(publicKey).length, "AES");
+				SecretKey secretKey = encryptionPassword(password, key);
 				
 				// convertit le String crypte en tableau de bytes cryptes
 				byte[] encryptedBytes = convertStringToBytes(encryptedString);
@@ -167,6 +200,7 @@ public class DecryptionWindow {
 				// sauvegarder limage et supprimer le json
 				BufferedImage bufferedImage = createBufferedImage(rgbs, imageModel.getImage().getWidth(), imageModel.getImage().getHeight());
 				saveImage(bufferedImage);
+				*/
 				try {
 					deleteJSON(folder+"json.json");
 				} catch (IOException e1) {
@@ -182,7 +216,6 @@ public class DecryptionWindow {
 				 */
 			}
 		});
-
 	}
 	
 	
@@ -243,6 +276,26 @@ public class DecryptionWindow {
 		zipFile1.renameTo(imgFile);
 	}
 	
+	public static byte[] convert(String string)
+	{
+		return Base64.getDecoder().decode(string);
+	}
+	
+	public static String convert(SecretKey key)// byte[] encryptedBytes)
+	{
+		return Base64.getEncoder().encodeToString(key.getEncoded());
+	}
+	
+	private SecretKey encryptionPassword(String password) throws NoSuchAlgorithmException, InvalidKeySpecException {
+		char[] pswd = password.toCharArray();
+		byte[] salt = { (byte) 0xA9, (byte) 0x9B, (byte) 0xC8, (byte) 0x32, (byte) 0x56, (byte) 0x34, (byte) 0xE3,
+				(byte) 0x03 };
+		SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
+		KeySpec spec = new PBEKeySpec(pswd, salt, 65536, 128);
+		this.passwordKey = factory.generateSecret(spec);
+		SecretKey secret = new SecretKeySpec(passwordKey.getEncoded(), "AES");
+		return secret;
+	}
 	
 
 	private byte[] decrypt(byte[] inpBytes, PrivateKey key) throws Exception {
@@ -333,20 +386,25 @@ public class DecryptionWindow {
 	private String decryptionData(SecretKey secretKey, byte[] encryptedBytes) {
 		String res = null;
 		try {
+			// Encrypt cipher
+			Cipher encryptCipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+			encryptCipher.init(Cipher.ENCRYPT_MODE, secretKey);
+			
 			// Decrypt cipher
-			Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
-			IvParameterSpec ivParameterSpec = new IvParameterSpec(cipher.getIV());
-			cipher.init(Cipher.DECRYPT_MODE, secretKey, ivParameterSpec);
+			Cipher decryptCipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+			IvParameterSpec ivParameterSpec = new IvParameterSpec(encryptCipher.getIV());
+			decryptCipher.init(Cipher.DECRYPT_MODE, secretKey, ivParameterSpec);
 			// Decrypt
 			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 			ByteArrayInputStream inStream = new ByteArrayInputStream(encryptedBytes);
-			CipherInputStream cipherInputStream = new CipherInputStream(inStream, cipher);
+			CipherInputStream cipherInputStream = new CipherInputStream(inStream, decryptCipher);
 			byte[] buf = new byte[1024];
 			int bytesRead;
 			while ((bytesRead = cipherInputStream.read(buf)) >= 0) {
 				outputStream.write(buf, 0, bytesRead);
 			}
-			res = new String(outputStream.toByteArray());
+			cipherInputStream.close();
+			res = Base64.getEncoder().encodeToString(outputStream.toByteArray());
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}

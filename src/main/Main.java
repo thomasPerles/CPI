@@ -30,7 +30,7 @@ public class Main {
 					MainWindow window = new MainWindow(model, view, wcontroller);
 
 					window.getFrame().setVisible(true);
-
+					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

@@ -150,7 +150,7 @@ public class EncryptionWindow {
 
 					// le String correspondant aux donnees a crypter
 					String rgbString = getRGBToString(image);
-					System.out.println(rgbString);
+					//System.out.println(rgbString);
 
 					// avec RSA, mdp -> cle session KEYGENERATOR ou SECRETKEY ?
 					SecretKey aesKey = null;
@@ -168,7 +168,6 @@ public class EncryptionWindow {
 						kpg = KeyPairGenerator.getInstance("RSA");
 						kpg.initialize(512);
 						KeyPair kp = kpg.generateKeyPair();
-
 						PublicKey pubk = kp.getPublic();
 						PrivateKey prvk = kp.getPrivate();
 
@@ -187,7 +186,7 @@ public class EncryptionWindow {
 
 						// stocker le vecteur et la cle de session dans le json
 						String encryptedString = convert(encryptedBytes);
-
+						//System.out.println("avant JSON, encryptedString" + encryptedString);
 						// recree l'image avec les RGB originaux
 						/*
 						 * File outputfile = new File("saved.jpg"); try {
@@ -201,19 +200,19 @@ public class EncryptionWindow {
 						// Getting filePath and fileName from MainWindow
 						// imageModelJSON.writeImageModelJSONFile(Main.filePath,
 						// Main.fileName, password, encryptedString);
-						json = imageModelJSON.writeImageModelJSONFile(path, fileName, sessionKey, encryptedString,
-								publicKey, privateKey);
+						json = imageModelJSON.writeImageModelJSONFile(path, fileName, encryptedString,
+								publicKey, privateKey, sessionKey);
 						
 						String extension = fileName.split("\\.")[1];
 						model.saveIMG(path, extension);
 						
 						String jsonFolder = json[0];
-						System.out.println("\nJSON FOLDER PATH : " + jsonFolder);
+						//System.out.println("\nJSON FOLDER PATH : " + jsonFolder);
 						String jsonName = json[1];
-						System.out.println("\nJSON NAME : " + jsonName);
+						//System.out.println("\nJSON NAME : " + jsonName);
 						String imageFolderPath = path.split(fileName)[0];
-						System.out.println("\nIMAGE FOLDER PATH : " + imageFolderPath);
-						System.out.println("\nFILE NAME : " + fileName);
+						//System.out.println("\nIMAGE FOLDER PATH : " + imageFolderPath);
+						//System.out.println("\nFILE NAME : " + fileName);
 						hideZipInImage(imageFolderPath, fileName, jsonFolder, jsonName);
 						
 					} catch (IOException e1) {
@@ -315,13 +314,13 @@ public class EncryptionWindow {
 	 *            SecretKey a convertir
 	 * @return String s la conversion du tableau de Bytes
 	 */
-	private String convert(SecretKey key)// byte[] encryptedBytes)
+	public static String convert(SecretKey key)// byte[] encryptedBytes)
 	{
 		// Get string representation of byte array of SecretKey
 		return Base64.getEncoder().encodeToString(key.getEncoded());
 	}
 
-	private String convert(byte[] encryptedBytes) {
+	public static String convert(byte[] encryptedBytes) {
 		return Base64.getEncoder().encodeToString(encryptedBytes);
 	}
 
@@ -489,7 +488,7 @@ public class EncryptionWindow {
 			try {
 				String command = "cd " + imageFolder + " && cat " + imageName + " json.zip > temp && cat temp > "
 						+ imageName + " && rm temp";
-				System.out.println(command);
+				//System.out.println(command);
 				String s;
 				Process p;
 				try {
