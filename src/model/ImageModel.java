@@ -1,6 +1,7 @@
 package model;
 
 import java.awt.Color;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBuffer;
 import java.awt.image.RenderedImage;
@@ -25,9 +26,11 @@ public class ImageModel {
 		loadByPixel(path);
 	}
 
-	public void saveBMP() {
+	public void saveIMG(String file, String extension) {
 		try {
-			ImageIO.write((RenderedImage) image, "bmp", new File("res-test/bearbull.bmp"));
+			//ImageIO.write((RenderedImage) image, extension, new File(file.split("\\."+extension)[0]+"test."+extension));
+			ImageIO.write(image, extension.toUpperCase(), new File(file));//.split("\\."+extension)[0]+"1"+"."+extension));
+			System.out.println("FILE TO SAVE : "+file);//.split("\\."+extension)[0]+"1"+"."+extension);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -40,13 +43,14 @@ public class ImageModel {
 			BufferedImage dummy = ImageIO.read(file);
 			int width = dummy.getWidth();
 			int height = dummy.getHeight();
-
+/*
 			BufferedImage bi = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 			for (int i = 0; i < width; i++)
 				for (int j = 0; j < height; j++)
 					bi.setRGB(i, j, dummy.getRGB(i, j));
-
-			setImage(bi);
+*/
+			//setImage(bi);
+			setImage(dummy);
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -62,6 +66,24 @@ public class ImageModel {
 				Color color = new Color(rand.nextInt(255), rand.nextInt(255), rand.nextInt(255));
 				/* Change pixel(i, j) color */
 				image.setRGB(i, j, color.getRGB());
+			}
+	}
+	
+	public void pixelateImage(Rectangle rectangle) {
+		Random rand = new Random();
+		for (int i = rectangle.x; i < rectangle.width + rectangle.x; i++)
+			for (int j = rectangle.y; j < rectangle.height + rectangle.y; j++) {
+				/* Create random color for pixel */
+				//Color color = new Color(rand.nextInt(255), rand.nextInt(255), rand.nextInt(255));
+				int alpha = 255;
+				int red = rand.nextInt(255);
+				int green = rand.nextInt(255);
+				int blue = rand.nextInt(255);
+				int p = (alpha << 24) | (red << 16) | (green << 8) | blue;
+				
+				/* Change pixel(i, j) color */
+				//image.setRGB(i, j, color.getRGB());
+				image.setRGB(i, j, p);
 			}
 	}
 

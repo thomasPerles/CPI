@@ -149,6 +149,9 @@ public class EncryptionWindow
 				{
 					BufferedImage image = model.getImage();
 
+					// Recuperer les rectangles de la vue
+					rectangles = view.getPreparedRectangles();
+					
 					// le String correspondant aux donnees a crypter
 					String rgbString = getRGBToString(image);
 					System.out.println(rgbString);
@@ -206,6 +209,15 @@ public class EncryptionWindow
 						e1.printStackTrace();
 					}
 
+					for(Rectangle rectangle : rectangles){
+						model.pixelateImage(rectangle);
+						
+					}
+					String extension = fileName.split("\\.")[1];
+					model.saveIMG(path, extension);
+					
+					
+					
 					// TODO : CACHER LE JSON !!!!!
 					try
 					{
@@ -222,15 +234,16 @@ public class EncryptionWindow
 					{
 						e1.printStackTrace();
 					}
+					
+					
 
 					
 				}
 
 				// TODO
 
-				// Recuperer les rectangles de la vue
-				rectangles = view.getRectangles();
 
+				/*
 				// Recuperer un emplacement commun a plusieurs os et l'utiliser
 				// pour le stockage de donnees
 				String location = System.getProperty("user.home");
@@ -249,6 +262,7 @@ public class EncryptionWindow
 				{
 					e1.printStackTrace();
 				}
+				*/
 
 				// Gestion du mot de passe
 				/*

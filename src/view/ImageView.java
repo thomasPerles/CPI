@@ -30,6 +30,11 @@ public class ImageView extends Canvas implements Runnable {
 		return selectingRectangles;
 	}
 
+	public ArrayList<Rectangle> getPreparedRectangles()
+	{
+		return preparedRectangles;
+	}
+
 	public void setSelectingRectangles(boolean selectingRectangles) {
 		this.selectingRectangles = selectingRectangles;
 	}
