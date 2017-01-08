@@ -233,8 +233,6 @@ public class EncryptionWindow {
 					 */
 					
 
-					// TODO : CACHER LE JSON !!!!!
-
 				}
 
 				// TODO
@@ -260,6 +258,8 @@ public class EncryptionWindow {
 				 * "Encryption successed")); else frame.setContentPane(new
 				 * ResultPanel(frame, "Encryption failed")); frame.revalidate();
 				 */
+				frame.setVisible(false);
+				frame.dispose();
 			}
 
 		});
@@ -283,12 +283,6 @@ public class EncryptionWindow {
 	private byte[] encrypt(byte[] inpBytes, PublicKey key, String xform) throws Exception {
 		Cipher cipher = Cipher.getInstance(xform);
 		cipher.init(Cipher.ENCRYPT_MODE, key);
-		return cipher.doFinal(inpBytes);
-	}
-
-	private byte[] decrypt(byte[] inpBytes, PrivateKey key, String xform) throws Exception {
-		Cipher cipher = Cipher.getInstance(xform);
-		cipher.init(Cipher.DECRYPT_MODE, key);
 		return cipher.doFinal(inpBytes);
 	}
 

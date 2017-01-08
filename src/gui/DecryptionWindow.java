@@ -130,6 +130,8 @@ public class DecryptionWindow {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// * DECRYPTAGE
+				String folder = path.split(fileName)[0];
+				findZipInImage(folder, fileName);
 				// recuperer le mdp et limage
 				if (passwordTextField.getText() != null)
 					password = passwordTextField.getText();
@@ -139,7 +141,7 @@ public class DecryptionWindow {
 				// recuperer les valeurs dans le json
 				String[] jsonString = null;
 				try {
-					jsonString = imageModelJSON.readImageFromJson(fileName, path);
+					jsonString = imageModelJSON.readImageFromJson(folder+"json.json", "json.json");
 				} catch (IOException | ParseException e1) {
 					e1.printStackTrace();
 				}
@@ -165,7 +167,11 @@ public class DecryptionWindow {
 				// sauvegarder limage et supprimer le json
 				BufferedImage bufferedImage = createBufferedImage(rgbs, imageModel.getImage().getWidth(), imageModel.getImage().getHeight());
 				saveImage(bufferedImage);
-				//deleteJSON(filePath);
+				try {
+					deleteJSON(folder+"json.json");
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
 
 				/*
 				 * // Gestion du mot de passe if
@@ -235,6 +241,14 @@ public class DecryptionWindow {
 
 		//Renommer image.zip en image.bmp
 		zipFile1.renameTo(imgFile);
+	}
+	
+	
+
+	private byte[] decrypt(byte[] inpBytes, PrivateKey key) throws Exception {
+		Cipher cipher = Cipher.getInstance("RSA");
+		cipher.init(Cipher.DECRYPT_MODE, key);
+		return cipher.doFinal(inpBytes);
 	}
 	
 	/**

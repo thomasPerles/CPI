@@ -56,10 +56,10 @@ public class ImageModelJSON {
 	 */
 	public String[] readImageFromJson(String file_Path, String file_Name) throws FileNotFoundException, IOException, ParseException {
 		JSONParser parser = new JSONParser();
-		String folder = file_Path.split(file_Name)[0];
-		String fileStr = folder + file_Name.split("\\.")[0] + "_" + file_Name.split("\\.")[1] + ".json";
+		//String folder = file_Path.split(file_Name)[0];
+		//String fileStr = folder + file_Name.split("\\.")[0] + "_" + file_Name.split("\\.")[1] + ".json";
 		Object obj = parser.parse(
-				new FileReader(fileStr));
+				new FileReader(file_Path));
 		JSONObject jsonObject = (JSONObject) obj;
 
 		String filePath = jsonObject.get("filePath").toString();
