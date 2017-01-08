@@ -262,7 +262,8 @@ public class EncryptionWindow {
 				 */
 				frame.setVisible(false);
 				frame.dispose();
-				// model.setImage(null);
+				model.loadImage(path);
+				view.setRectangles(new ArrayList<Rectangle>());
 				view.repaint();
 			}
 

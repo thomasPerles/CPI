@@ -15,15 +15,13 @@ import javax.imageio.ImageIO;
 public class ImageModel {
 
 	private BufferedImage image;
-	private WritableRaster wRaster;
-	private DataBuffer data;
 
 	public ImageModel() {
 		//image = new BufferedImage(344, 455, BufferedImage.TYPE_INT_RGB);
 	}
 
 	public ImageModel(String path) {
-		loadByPixel(path);
+		loadImage(path);
 	}
 	
 	/**
@@ -47,20 +45,13 @@ public class ImageModel {
 	 * @param fileName
 	 * String : image a importer
 	 */
-	public void loadByPixel(String fileName) {
+	public void loadImage(String fileName) {
 		File file = new File(fileName);
 		try {
 
 			BufferedImage dummy = ImageIO.read(file);
 			int width = dummy.getWidth();
 			int height = dummy.getHeight();
-/*
-			BufferedImage bi = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-			for (int i = 0; i < width; i++)
-				for (int j = 0; j < height; j++)
-					bi.setRGB(i, j, dummy.getRGB(i, j));
-*/
-			//setImage(bi);
 			setImage(dummy);
 
 		} catch (IOException e) {
@@ -100,16 +91,11 @@ public class ImageModel {
 		Random rand = new Random();
 		for (int i = rectangle.x; i < rectangle.width + rectangle.x; i++)
 			for (int j = rectangle.y; j < rectangle.height + rectangle.y; j++) {
-				/* Create random color for pixel */
-				//Color color = new Color(rand.nextInt(255), rand.nextInt(255), rand.nextInt(255));
 				int alpha = 255;
 				int red = rand.nextInt(255);
 				int green = rand.nextInt(255);
 				int blue = rand.nextInt(255);
 				int p = (alpha << 24) | (red << 16) | (green << 8) | blue;
-				
-				/* Change pixel(i, j) color */
-				//image.setRGB(i, j, color.getRGB());
 				image.setRGB(i, j, p);
 			}
 	}
@@ -139,26 +125,14 @@ public class ImageModel {
 
 		return res.toString();
 	}
-
-	public DataBuffer getImageRasterDataBuffer() {
-		return data;
-	}
-
-	public WritableRaster getImageRaster() {
-		return wRaster;
-	}
-
+	
 	public BufferedImage getImage() {
 		return image;
 	}
 
 	public void setImage(BufferedImage image) {
 		this.image = image;
-		this.wRaster = (WritableRaster) image.getData();
-		this.data = image.getData().getDataBuffer();
 	}
-	
-	
 	
 	public void rebuildImage(String string)
 	{
@@ -168,10 +142,7 @@ public class ImageModel {
 		for(int i = 0; i < pixels.length; i++)
 		{
 			int width = i / image.getHeight();
-			
-			// System.out.println("height : " + height);
-			// System.out.println("x : " + i % image.getWidth());
-			
+
 			if(!pixels[i].equals("0"))
 			{
 				image.setRGB(width, i % image.getHeight(), Integer.parseInt(pixels[i]));

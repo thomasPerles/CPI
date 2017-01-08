@@ -127,7 +127,7 @@ public class MainWindow {
 
 	private void updateImageModel(File file) {
 		
-		this.model.loadByPixel(file.getAbsolutePath());
+		this.model.loadImage(file.getAbsolutePath());
 		checkBounds();
 		this.view.repaint();
 

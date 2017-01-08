@@ -219,6 +219,8 @@ public class DecryptionWindow {
 				 */
 				frame.setVisible(false);
 				frame.dispose();
+				model.loadImage(path);
+				view.repaint();
 			}
 		});
 	}
