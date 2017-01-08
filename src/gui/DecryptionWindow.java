@@ -1,5 +1,6 @@
 package gui;
 
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -9,14 +10,21 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 import java.util.ArrayList;
+import java.util.Base64;
 
+import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.CipherInputStream;
 import javax.crypto.CipherOutputStream;
+import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
@@ -121,25 +129,28 @@ public class DecryptionWindow {
 				// recuperer les valeurs dans le json
 				String[] jsonString = null;
 				try {
-					jsonString = imageModelJSON.readImageFromJson(fileName);
+					jsonString = imageModelJSON.readImageFromJson(fileName, path);
 				} catch (IOException | ParseException e1) {
 					e1.printStackTrace();
 				}
 				String filePath = jsonString[0];
-				String fileName = jsonString[1];
+				String file_Name = jsonString[1];
 				String key = jsonString[2];
 				String encryptedString = jsonString[3];
-				System.out.println("filePath : " + filePath + "\nfileName : " + fileName + "\nkey : " + key + "\nencryptedString : " + encryptedString);
+				System.out.println("filePath : " + filePath + "\nfileName : " + file_Name + "\nkey : " + key + "\nencryptedString : " + encryptedString);
 
 				// avec RSA, verifier que le mdp = cle de session
-				SecretKey secretKey = convertStringToSecretKey(key);
-				SecretKey aesKey = encryptionPassword(password, secretKey);
-
-				// avec AES et cle de session, decrypter le vecteur rgb dans json ou dans les donnees de limage
-				byte[] decryptedBytes = decryptionData(aesKey, imageModel.getImage(), encryptedString);
+				SecretKey publicKey = convertStringToSecretKey(key);
+				SecretKey secretKey = encryptionPassword(password, publicKey);
 				
-				// convertir vers int rgb[][];
-				int rgbs[][] = convertBytesToInts(decryptedBytes);
+				// convertit le String crypte en tableau de bytes cryptes
+				byte[] encryptedBytes = convertStringToBytes(encryptedString);
+				
+				// avec AES et la cle de session, decrypter le tableau de bytes en String 
+				String decryptedString = decryptionData(secretKey, encryptedBytes);
+				
+				// convertir le String en matrice de pixels
+				int rgbs[][] = convertStringToInts(decryptedString);
 				
 				// sauvegarder limage et supprimer le json
 				BufferedImage bufferedImage = createBufferedImage(rgbs, imageModel.getImage().getWidth(), imageModel.getImage().getHeight());
@@ -159,111 +170,142 @@ public class DecryptionWindow {
 	}
 	
 	/**
-	 * saveImage sauve l'image dans du paramètre bufferedImage
-	 * @param bufferedImage
-	 * BufferedImage bufferedImage l'image a sauve
-	 */
-	private void saveImage(BufferedImage bufferedImage) {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	/**
-	 * convertBytesToInts convertit un tableau de byte en matrice de int
-	 * @param decryptedBytes
-	 * byte[] le tabeau de bytes a convertir
-	 * @return
-	 * int[][] res la matrice d'int 
-	 */
-	private int[][] convertBytesToInts(byte[] decryptedBytes) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	/**
-	 * deleteJSON efface le json de l'image
-	 * @param filePath
-	 * String filePath correspond au chemin du fichier .json a supprimer
-	 */
-	private void deleteJSON(String filePath) {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	/**
 	 * convertStringToSecretKey convertit le String key en SecretKey
-	 * * @param key
+	 * @param key
 	 * String key a convertir
 	 */
 	private SecretKey convertStringToSecretKey(String key) {
+		byte[] encoded = Base64.getDecoder().decode(key);
+		SecretKey aesKey = new SecretKeySpec(encoded, "AES");
+		return aesKey;
+		/* autre version a tester
 		byte[] encoded = key.getBytes();
 		SecretKey aesKey = new SecretKeySpec(encoded, "AES");
 		return aesKey;
+		*/
 	}
-
+	
 	/**
 	 * encryptionPassword genere une clef avec l'algorithme xxxxx en utilisant
 	 * le password
 	 * 
 	 * @param password
 	 *            String a crypter avec l'algorithme xxxxxx et la clef aesKey
-	 * @param aesKey
+	 * @param publicKey
 	 *            SecretKey pour crypter le password avec l'algorithme xxxx
-	 * @return SecretKey aesKey correspondant au password crypter avec
-	 *         l'algorithme xxxx et la clef aesKey
+	 * @return SecretKey secretKey correspondant au password crypter avec
+	 *         l'algorithme xxxx et la clef publicKey
 	 */
-	private SecretKey encryptionPassword(String password, SecretKey aesKey) {
-		// TODO Auto-generated method stub
-		return aesKey;
+	private SecretKey encryptionPassword(String password, SecretKey publicKey) {
+		// TODO
+		/*
+		byte[] salt ={ (byte) 0xA9, (byte) 0x9B, (byte) 0xC8, (byte) 0x32, (byte) 0x56, (byte) 0x34, (byte) 0xE3, (byte) 0x03 };
+		SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
+		KeySpec spec = new PBEKeySpec(password.toCharArray(), salt, 65536, 128);
+		publicKey = factory.generateSecret(spec);
+		*/
+		SecretKey secretKey = new SecretKeySpec(publicKey.getEncoded(), "AES");
+		return secretKey;
 	}
-
-	private byte[] decryptionData(SecretKey aesKey, BufferedImage image, String encryptedString) {
+	
+	/*
+	 	KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
+		kpg.initialize(512); // 512 is the keysize.
+		KeyPair kp = kpg.generateKeyPair();
+		PublicKey pubk = kp.getPublic();
+		PrivateKey prvk = kp.getPrivate();
+		byte[] dataBytes = "J2EE Security for Servlets, EJBs and Web Services".getBytes();
+	 */
+	/*
+	public byte[] encrypt(String password, PublicKey publicKey) throws Exception {
+		Cipher cipher = Cipher.getInstance("RSA/NONE/PKCS1PADDING");
+		cipher.init(Cipher.ENCRYPT_MODE, publicKey);
+		return cipher.doFinal(password.getBytes());
+	}
+	
+	public byte[] decrypt(byte[] password, PrivateKey privateKey) throws Exception {
+		Cipher cipher = Cipher.getInstance("RSA/NONE/PKCS1PADDING");
+		cipher.init(Cipher.DECRYPT_MODE, privateKey);
+		return cipher.doFinal(password);
+	}
+	*/
+	/**
+	 * convertStrinToBytes convertit un String en tableau de bytes
+	 * @param encryptedString
+	 * String a convertir
+	 * @return byte[] bytes correspondant au String converti
+	 */
+	private byte[] convertStringToBytes(String encryptedString) {
+		return Base64.getDecoder().decode(encryptedString);
+	}
+	
+	/**
+	 * decryptionData decrypte un tableau de bytes avec l'algorithme AES en utilisant la clef secretKey et renvoie un String
+	 * @param secretKey
+	 * SecretKey la clef pour crypter / decrypter
+	 * @param encryptedBytes
+	 * byte[] le tableau de bytes a decrypter
+	 * @return
+	 * String res le String correspondant au tableau de bytes decrypte
+	 */
+	private String decryptionData(SecretKey secretKey, byte[] encryptedBytes) {
+		String res = null;
 		try {
-			// Encrypt cipher
-			Cipher encryptCipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
-			encryptCipher.init(Cipher.ENCRYPT_MODE, aesKey);
-			// Encrypt
-			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-			CipherOutputStream cipherOutputStream = new CipherOutputStream(outputStream, encryptCipher);
-			cipherOutputStream.write(encryptedString.getBytes());
-			cipherOutputStream.flush();
-			cipherOutputStream.close();
-			byte[] encryptedBytes = outputStream.toByteArray();
-			// System.out.println(encryptedBytes);
 			// Decrypt cipher
-			Cipher decryptCipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
-			IvParameterSpec ivParameterSpec = new IvParameterSpec(encryptCipher.getIV());
-			decryptCipher.init(Cipher.DECRYPT_MODE, aesKey, ivParameterSpec);
-			// System.out.println(ivParameterSpec.toString());
+			Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+			IvParameterSpec ivParameterSpec = new IvParameterSpec(cipher.getIV());
+			cipher.init(Cipher.DECRYPT_MODE, secretKey, ivParameterSpec);
 			// Decrypt
-			outputStream = new ByteArrayOutputStream();
+			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 			ByteArrayInputStream inStream = new ByteArrayInputStream(encryptedBytes);
-			CipherInputStream cipherInputStream = new CipherInputStream(inStream, decryptCipher);
+			CipherInputStream cipherInputStream = new CipherInputStream(inStream, cipher);
 			byte[] buf = new byte[1024];
 			int bytesRead;
 			while ((bytesRead = cipherInputStream.read(buf)) >= 0) {
 				outputStream.write(buf, 0, bytesRead);
 			}
-			
-			// System.out.println("Result: " + new String(outputStream.toByteArray()));
+			res = new String(outputStream.toByteArray());
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
-		return null;
+		return res;
+	}
+	
+	/**
+	 * convertStringToInts convertit le String decrypte en matrice de int. Lorsque le String contient un "/" on recupere le pixel dans l'image
+	 * @param decryptedString
+	 * String a convertir
+	 * @return
+	 * int[][] res la matrice d'int 
+	 */
+	private int[][] convertStringToInts(String decryptedString) {
+		int [][] res = null;
+		BufferedImage image = model.getImage();
+		for (int i = 0; i < image.getWidth(); i++)
+		{
+			for (int j = 0; j < image.getHeight(); j++)
+			{
+				boolean isIn = false;
+				for (Rectangle r : rectangles)
+				{
+					if (r.contains(new Point(i, j)))
+					{
+						isIn = true;
+						break;
+					}
+				}
+				if (isIn)
+				{
+					// mettre les pixels random ???????????????????????
+					//res += String.valueOf(image.getRGB(i, j));
+				}
+				//else
+					//res += "/";
+			}
+		}
+		return res;
 	}
 
-	private SecretKey decryptionPassword(String password, SecretKey tmp) throws NoSuchAlgorithmException, InvalidKeySpecException
-	{
-		//char[] pswd = password.toCharArray();
-		//byte[] salt ={ (byte) 0xA9, (byte) 0x9B, (byte) 0xC8, (byte) 0x32, (byte) 0x56, (byte) 0x34, (byte) 0xE3, (byte) 0x03 };
-		//SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
-		//KeySpec spec = new PBEKeySpec(pswd, salt, 65536, 128);
-		SecretKey secret = new SecretKeySpec(tmp.getEncoded(), "AES");
-		return secret;
-	}
-	
-	
-	
 	/**
 	 * createBufferedImage genere une image a partir d'un tableau de pixels et des dimensions de l'image
 	 * @param rgbs
@@ -290,5 +332,25 @@ public class DecryptionWindow {
 		 * File outputfile = new File("saved.png"); ImageIO.write(bi, "png",
 		 * outputfile);
 		 */
+	}
+	
+	/**
+	 * saveImage sauve l'image dans du paramètre bufferedImage
+	 * @param bufferedImage
+	 * BufferedImage bufferedImage l'image a sauve
+	 */
+	private void saveImage(BufferedImage bufferedImage) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	/**
+	 * deleteJSON efface le json de l'image
+	 * @param filePath
+	 * String filePath correspond au chemin du fichier .json a supprimer
+	 */
+	private void deleteJSON(String filePath) {
+		// TODO Auto-generated method stub
+		
 	}
 }

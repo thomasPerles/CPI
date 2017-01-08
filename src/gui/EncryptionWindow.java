@@ -22,6 +22,7 @@ import java.nio.file.Paths;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
@@ -300,6 +301,13 @@ public class EncryptionWindow
 		SecretKey secret = new SecretKeySpec(publicKey.getEncoded(), "AES");
 		return secret;
 	}
+	
+	// TODO : javadoc
+	/*public byte[] encryptionPassword2(String password, PublicKey publicKey) throws Exception {
+		Cipher cipher = Cipher.getInstance("RSA/NONE/PKCS1PADDING");
+		cipher.init(Cipher.ENCRYPT_MODE, publicKey);
+		return cipher.doFinal(password.getBytes());
+	}*/
 
 	// TODO
 	// est-ce necessaire ???????????????????????????????????????????
@@ -311,14 +319,7 @@ public class EncryptionWindow
 	 * @return String s la conversion du tableau de Bytes
 	 */
 	private String convert(SecretKey key)//byte[] encryptedBytes)
-	{/*
-		String s = "";
-		for (int i = 0; i < encryptedBytes.length; i++)
-		{
-			s += encryptedBytes[i];
-		}
-		return s;
-		*/
+	{
 		StringBuilder res = new StringBuilder();
         // Get string representation of byte array of SecretKey
         String sKey = Base64.getEncoder().encodeToString(key.getEncoded());
@@ -399,7 +400,6 @@ public class EncryptionWindow
 				}
 				if (isIn)
 				{
-					// mettre les pixels random ???????????????????????
 					res += String.valueOf(image.getRGB(i, j));
 				}
 				else
