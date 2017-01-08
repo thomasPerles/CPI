@@ -5,55 +5,38 @@ import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
-import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 import java.util.ArrayList;
 import java.util.Base64;
-import java.util.Enumeration;
 import java.util.Random;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
 import javax.crypto.Cipher;
-import javax.crypto.CipherOutputStream;
-import javax.crypto.KeyGenerator;
-import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
-import javax.crypto.spec.PBEParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
-import main.Main;
 import model.ImageModel;
 import model.ImageModelJSON;
 import view.ImageView;
@@ -138,7 +121,6 @@ public class EncryptionWindow {
 			@Override
 
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("debut crypto");
 
 				if (passwordTextField.getText() != null)
 					password = passwordTextField.getText();
@@ -151,7 +133,6 @@ public class EncryptionWindow {
 
 					// le String correspondant aux donnees a crypter
 					String rgbString = getRGBToString(image);
-					//System.out.println(rgbString);
 
 					// avec RSA, mdp -> cle session KEYGENERATOR ou SECRETKEY ?
 					SecretKey aesKey = null;
@@ -162,7 +143,6 @@ public class EncryptionWindow {
 					}
 
 					// Genere une paire de cles
-
 					KeyPairGenerator kpg;
 
 					try {
@@ -179,30 +159,10 @@ public class EncryptionWindow {
 						String sessionKey = convert(encBytes);
 						String privateKey = convert(prvk.getEncoded());
 						String publicKey = convert(pubk.getEncoded());
-
-						// avec AES et cle de session, crypte les donnees de
-						// limage
-						// (=vecteur rgbs)
-						// byte[] encryptedBytes = encryptionData(aesKey, rgbString);
-						
-						// stocker le vecteur et la cle de session dans le json
-						//String encryptedString = convert(encryptedBytes);
 						String initVector = "RandomInitVector";
 						String encryptedString = newEncrypt(password, initVector, rgbString, aesKey);
-						//System.out.println("avant JSON, encryptedString" + encryptedString);
-						// recree l'image avec les RGB originaux
-						/*
-						 * File outputfile = new File("saved.jpg"); try {
-						 * ImageIO.write(createBufferedImage(rgbs,
-						 * image.getWidth(), image.getHeight()), "jpg",
-						 * outputfile); } catch (IOException e2) {
-						 * e2.printStackTrace(); }
-						 */
 
 						String[] json = null;
-						// Getting filePath and fileName from MainWindow
-						// imageModelJSON.writeImageModelJSONFile(Main.filePath,
-						// Main.fileName, password, encryptedString);
 						json = imageModelJSON.writeImageModelJSONFile(path, fileName, encryptedString,
 								publicKey, privateKey, sessionKey);
 						
@@ -210,56 +170,18 @@ public class EncryptionWindow {
 						model.saveIMG(path, extension);
 						
 						String jsonFolder = json[0];
-						//System.out.println("\nJSON FOLDER PATH : " + jsonFolder);
 						String jsonName = json[1];
-						//System.out.println("\nJSON NAME : " + jsonName);
 						String imageFolderPath = path.split(fileName)[0];
-						//System.out.println("\nIMAGE FOLDER PATH : " + imageFolderPath);
-						//System.out.println("\nFILE NAME : " + fileName);
 						hideZipInImage(imageFolderPath, fileName, jsonFolder, jsonName);
 						
 					} catch (IOException e1) {
 						e1.printStackTrace();
 					} catch (NoSuchAlgorithmException e2) {
-						// TODO Auto-generated catch block
 						e2.printStackTrace();
 					} catch (Exception e1) {
-						// TODO Auto-generated catch block
 						e1.printStackTrace();
-					}
-					/*
-					 * for(Rectangle rectangle : rectangles){
-					 * model.pixelateImage(rectangle);
-					 * 
-					 * }
-					 */
-					
-
+					}				
 				}
-
-				// TODO
-
-				/*
-				 * // Recuperer un emplacement commun a plusieurs os et
-				 * l'utiliser // pour le stockage de donnees String location =
-				 * System.getProperty("user.home"); File file = new
-				 * File(location, "Test.txt");
-				 * 
-				 * try { // Ecrire des octets dans un fichier //
-				 * FileOutputStream fout = new FileOutputStream(file);
-				 * PrintWriter pw = new PrintWriter(file);
-				 * 
-				 * pw.write("test"); pw.close(); } catch (FileNotFoundException
-				 * e1) { e1.printStackTrace(); }
-				 */
-
-				// Gestion du mot de passe
-				/*
-				 * if (passwordTextField.getText().equals("password"))
-				 * frame.setContentPane(new ResultPanel(frame,
-				 * "Encryption successed")); else frame.setContentPane(new
-				 * ResultPanel(frame, "Encryption failed")); frame.revalidate();
-				 */
 				frame.setVisible(false);
 				frame.dispose();
 				model.loadImage(path);
@@ -270,9 +192,8 @@ public class EncryptionWindow {
 		});
 
 	}
-
-	// TODO
-
+	
+	
 	/**
 	 * encryptionPassword genere une clef avec l'algorithme xxxxx en utilisant
 	 * le password
@@ -310,7 +231,6 @@ public class EncryptionWindow {
 			cipher.init(Cipher.ENCRYPT_MODE, aesKey, iv);
 
 			byte[] encrypted = cipher.doFinal(value.getBytes());
-			System.out.println("encrypted string: " + org.apache.commons.codec.binary.Base64.encodeBase64String(encrypted));
 		
 			return org.apache.commons.codec.binary.Base64.encodeBase64String(encrypted);
 		} catch (Exception ex) {
@@ -319,18 +239,7 @@ public class EncryptionWindow {
 
 		return null;
 	}
-
-	// TODO : javadoc
-	/*
-	 * public byte[] encryptionPassword2(String password, PublicKey publicKey)
-	 * throws Exception { Cipher cipher =
-	 * Cipher.getInstance("RSA/NONE/PKCS1PADDING");
-	 * cipher.init(Cipher.ENCRYPT_MODE, publicKey); return
-	 * cipher.doFinal(password.getBytes()); }
-	 */
-
-	// TODO
-	// est-ce necessaire ???????????????????????????????????????????
+	
 	/**
 	 * Convertit une SecretKey en String
 	 * 
@@ -348,39 +257,7 @@ public class EncryptionWindow {
 		return Base64.getEncoder().encodeToString(encryptedBytes);
 	}
 
-	/**
-	 * encryptionData crypte le rgbString avec l'algorithme AES en utilisant la
-	 * clef aesKey
-	 * 
-	 * @param aesKey
-	 *            SecretKey la clef utilisee lors de l'algorithme AES pour
-	 *            crypter rgbString
-	 * @param rgbString
-	 *            String qui est crypte avec l'algorithme AES et aesKey
-	 * @return byte[] encryptedBytes qui est le tableau de Bytes correspondant a
-	 *         rgbString crypte
-	 */
-	private byte[] encryptionData(SecretKey aesKey, String rgbString) {
-		String s = rgbString;// rgbtoString(rgbString, image.getWidth(),
-								// image.getHeight());
-		byte[] encryptedBytes = null;
-		try {
-			// Encrypt cipher
-			Cipher encryptCipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
-			encryptCipher.init(Cipher.ENCRYPT_MODE, aesKey);
-			// Encrypt
-			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-			CipherOutputStream cipherOutputStream = new CipherOutputStream(outputStream, encryptCipher);
-			cipherOutputStream.write(s.getBytes());
-			cipherOutputStream.flush();
-			cipherOutputStream.close();
-			encryptedBytes = outputStream.toByteArray();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return encryptedBytes;
-	}
-
+	
 	/**
 	 * getRGBToString genere le String a crypter : "/" pour les pixels a ne pas
 	 * crypter et la valeur en Bytes pour les pixels a crypter
@@ -404,16 +281,11 @@ public class EncryptionWindow {
 				if (isIn) {
 					res += String.valueOf(image.getRGB(i, j));
 					/* Create random color for pixel */
-					// Color color = new Color(rand.nextInt(255),
-					// rand.nextInt(255), rand.nextInt(255));
 					int alpha = 255;
 					int red = rand.nextInt(255);
 					int green = rand.nextInt(255);
 					int blue = rand.nextInt(255);
 					int p = (alpha << 24) | (red << 16) | (green << 8) | blue;
-
-					/* Change pixel(i, j) color */
-					// image.setRGB(i, j, color.getRGB());
 					image.setRGB(i, j, p);
 				} else
 					res += "0";
@@ -440,8 +312,6 @@ public class EncryptionWindow {
 		BufferedImage buff = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
-				// System.out.println("i = " + i + " j = " + j + " RGB = " +
-				// image.getRGB(i, j));
 				buff.setRGB(i, j, rgbs[i][j]);
 			}
 		}
@@ -502,7 +372,6 @@ public class EncryptionWindow {
 					if (line == null) {
 						break;
 					}
-					// System.out.println(line);
 				}
 			} catch (Exception ex) {
 			}
@@ -512,18 +381,13 @@ public class EncryptionWindow {
 			try {
 				String command = "cd " + imageFolder + " && cat " + imageName + " json.zip > temp && cat temp > "
 						+ imageName + " && rm temp";
-				//System.out.println(command);
 				String s;
 				Process p;
 				try {
 					p = Runtime.getRuntime().exec(new String[] { "/bin/sh", "-c", command });
 					BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
 					while ((s = br.readLine()) != null)
-						// System.out.println("line: " + s); //Sortie de la
-						// commande
 						p.waitFor();
-					// System.out.println ("exit: " + p.exitValue());//Code de
-					// sortie de la commande
 					p.destroy();
 				} catch (Exception e) {
 				}
