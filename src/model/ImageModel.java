@@ -163,14 +163,18 @@ public class ImageModel {
 	public void rebuildImage(String string)
 	{
 		String[] pixels = string.split("/");
+
 		
 		for(int i = 0; i < pixels.length; i++)
 		{
-			int height = i / image.getWidth();
+			int width = i / image.getHeight();
+			
+			// System.out.println("height : " + height);
+			// System.out.println("x : " + i % image.getWidth());
 			
 			if(!pixels[i].equals("0"))
 			{
-				image.setRGB(i % image.getWidth(), height, Integer.parseInt(pixels[i]));
+				image.setRGB(width, i % image.getHeight(), Integer.parseInt(pixels[i]));
 			}
 				
 		}

@@ -262,6 +262,7 @@ public class EncryptionWindow {
 				 */
 				frame.setVisible(false);
 				frame.dispose();
+				// model.setImage(null);
 				view.repaint();
 			}
 

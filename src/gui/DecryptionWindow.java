@@ -168,7 +168,7 @@ public class DecryptionWindow {
 						String result = newDecrypt(password, initVector, encryptedString, passwordKey);
 						// System.out.println("test : " + test);
 						// System.out.println("encryptedString : " + encryptedString);
-						System.out.println("result : " + result);
+						// System.out.println("result : " + result);
 						model.rebuildImage(result);
 						view.repaint();
 						//System.out.println(path);
