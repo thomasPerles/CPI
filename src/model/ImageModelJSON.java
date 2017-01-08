@@ -123,14 +123,15 @@ public class ImageModelJSON {
 	 * @return String[] contenant le path du dossier du fichier json ainsi que le nom du fichier json
 	 * @throws IOException
 	 */
-	public String[] writeImageModelJSONFile(String filePath, String fileName, String key, String encryptedString)
+	public String[] writeImageModelJSONFile(String filePath, String fileName, String sessionKey, String encryptedString, String publicKey, String privateKey)
 			throws IOException {
 		JSONObject obj = new JSONObject();
 		obj.put("filePath", filePath);
 		obj.put("fileName", fileName);
-		obj.put("clef", key);
+		obj.put("clef session", sessionKey);
 		obj.put("encryptedString", encryptedString);
-
+		obj.put("clef publique", publicKey);
+		obj.put("clef privee", privateKey);
 		// try-with-resources statement based on post comment below :)
 		String folder = filePath.split(fileName)[0];
 		String fileStr = fileName.split("\\.")[0] + "_" + fileName.split("\\.")[1] + ".json";

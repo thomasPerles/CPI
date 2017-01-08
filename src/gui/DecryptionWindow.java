@@ -5,9 +5,16 @@ import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.KeyPair;
@@ -19,6 +26,9 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Enumeration;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -155,7 +165,7 @@ public class DecryptionWindow {
 				// sauvegarder limage et supprimer le json
 				BufferedImage bufferedImage = createBufferedImage(rgbs, imageModel.getImage().getWidth(), imageModel.getImage().getHeight());
 				saveImage(bufferedImage);
-				deleteJSON(filePath);
+				//deleteJSON(filePath);
 
 				/*
 				 * // Gestion du mot de passe if
@@ -167,6 +177,64 @@ public class DecryptionWindow {
 			}
 		});
 
+	}
+	
+	
+	
+	
+	/**
+	 * Cette fonction sert a trouver un fichier json dans un zip, lui-meme cache dans une image, puis l'extraire.
+	 * @param imageFolder
+	 * Contient le path vers le dosier contenant l'image
+	 * @param imageName
+	 * Contient le nom de l'image (extension incluse)
+	 */
+	public void findZipInImage(String imageFolder, String imageName)
+	{
+		//Renommer image.bmp en image.zip
+		String name = imageName.split("\\.")[0];
+		String extension = imageName.split("\\.")[1];
+		File imgFile  = new File(imageFolder+name+"."+extension);
+		File zipFile1 = new File(imageFolder+name+".zip");
+		imgFile.renameTo(zipFile1);
+
+		//Recuperer le contenu du zip (un json) et le copier a part
+		ZipFile zipFile;
+		try
+		{
+			zipFile = new ZipFile(imageFolder+name+".zip");
+			Enumeration<? extends ZipEntry> entries = zipFile.entries();
+
+			File json = new File(imageFolder+"json.json");
+			
+		    while(entries.hasMoreElements()){
+		        ZipEntry entry = entries.nextElement();
+		        InputStream stream = zipFile.getInputStream(entry);
+		        
+		        BufferedInputStream is = new BufferedInputStream(stream);
+                int currentByte;
+                byte data[] = new byte[4096];
+
+                FileOutputStream fos = new FileOutputStream(json);
+                BufferedOutputStream dest = new BufferedOutputStream(fos,4096);
+
+                while ((currentByte = is.read(data, 0, 4096)) != -1) {
+                    dest.write(data, 0, currentByte);
+                }
+                dest.flush();
+                dest.close();
+                is.close();
+                stream.close();		
+		    }
+		    zipFile.close();
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+
+		//Renommer image.zip en image.bmp
+		zipFile1.renameTo(imgFile);
 	}
 	
 	/**
@@ -348,9 +416,10 @@ public class DecryptionWindow {
 	 * deleteJSON efface le json de l'image
 	 * @param filePath
 	 * String filePath correspond au chemin du fichier .json a supprimer
+	 * @throws IOException 
 	 */
-	private void deleteJSON(String filePath) {
-		// TODO Auto-generated method stub
+	private void deleteJSON(String filePath) throws IOException {
+		Files.deleteIfExists(Paths.get(filePath));
 		
 	}
 }
