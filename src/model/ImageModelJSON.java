@@ -1,121 +1,148 @@
 package model;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 public class ImageModelJSON {
 
-	 public ImageModel readImageFromJson(String fileName) {
-	        /*SCollection fileToCollection = new SCollection();
-	        ArrayList<Shape> shapes = new ArrayList<>();
-	        JSONParser parser = new JSONParser();
-	        try {
-	            Object obj = parser.parse(new FileReader(fileName));
-	            JSONObject jsonObject = (JSONObject) obj;
+	/**
+	 * readImageFromJson permet de lire le contenu d'un fichier .json dont le nom est le parametre file_Name et d'en renvoyer le contenu
+	 * @param file_Name
+	 * String qui correspond au nom du fichier .json
+	 * @return
+	 * String[] res qui renvoie le contenu du fichier .json : le chemin du fichier, le nom du fichier, la clef et le String correspondant au tableau de Bytes cryptes  
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 * @throws ParseException
+	 */
+	/*
+	public String[] readImageFromJson(String file_Name) throws FileNotFoundException, IOException, ParseException {
+		String[] res = null;
+		JSONParser parser = new JSONParser();
+		Object obj = parser.parse(
+				new FileReader("res-test/" + file_Name.split("\\.")[0] + "_" + file_Name.split("\\.")[1] + ".json"));
+		JSONObject jsonObject = (JSONObject) obj;
 
-	            JSONArray shapesArray = (JSONArray) jsonObject.get("shapes");
-	            for (int i = 0; i < shapesArray.size(); i++) { // on itère sur le tableau de shapes
-	                JSONObject shapeTmp = (JSONObject) shapesArray.get(i);
-	                //la classe du shape
-	                Shape shapeToSave = null;
-	                switch (shapeTmp.get("class").toString()) {
-		                case "Rectangle":
-		                    shapeToSave = this.createRectangle(shapeTmp);
-		                    break;
-		                case "Cercle":
-		                	shapeToSave = this.createCercle(shapeTmp);
-		                	break;
-		                case "Texte":
-		                	shapeToSave = this.createTexte(shapeTmp);
-		                	break;
-		                case "Collection":
-		                	shapeToSave = this.createCollection(shapeTmp);
-		                	break;
-		                case "Polygon":
-		                	shapeToSave = this.createPolygon(shapeTmp);
-		                	break;
-		                case "PolygonRegulier":
-		                	shapeToSave = this.createPolygonRegulier(shapeTmp);
-		                	break;
-	                }
-	                shapes.add(shapeToSave);
-	                fileToCollection.setShapesCollection(shapes);
-	            }
-	        } catch (IOException e) {
-	            e.printStackTrace();
-	        } catch (ParseException e) {
-	            e.printStackTrace();
-	        }
-	        return fileToCollection;*/
-		 return null;
-	 }
-	 
-	 public void writeImageModelJSONFile(String filePath, String fileName, String password, String encryptedString) throws IOException {
-		 JSONObject obj = new JSONObject();
-			obj.put("filePath", filePath);
-			obj.put("fileName", fileName);
-			obj.put("password", password);
-			obj.put("encryptedString", encryptedString);
-	 
-			// try-with-resources statement based on post comment below :)
-			try (FileWriter file = new FileWriter("res-test/"+ fileName +".json")) {
-				file.write(obj.toJSONString());
-				System.out.println("Successfully Copied JSON Object to File...");
-				System.out.println("\nJSON Object: " + obj);
-			}
-	 }
+		String filePath = jsonObject.get("filePath").toString();
+		res[res.length] = filePath;
+		String fileName = jsonObject.get("fileName").toString();
+		res[res.length] = fileName;
+		String key = jsonObject.get("clef").toString();
+		res[res.length] = key;
+		String encryptedString = jsonObject.get("encryptedString").toString();
+		res[res.length] = encryptedString;
 
-	public ImageModel createRectangle(JSONObject imageModel) {
-		/*int width = Integer.parseInt(((JSONObject)shapeTmp.get("prop")).get("width").toString());
-		int height = Integer.parseInt(((JSONObject)shapeTmp.get("prop")).get("height").toString());
-		Point loc = new Point(Integer.parseInt(((JSONObject)shapeTmp.get("prop")).get("x").toString()), Integer.parseInt(((JSONObject)shapeTmp.get("prop")).get("y").toString()));
-		
-		boolean filled = Boolean.parseBoolean(((JSONObject)shapeTmp.get("color")).get("filled").toString());
-		boolean stroked = Boolean.parseBoolean(((JSONObject)shapeTmp.get("color")).get("stroked").toString());
-		String filledColorString = ((JSONObject)shapeTmp.get("color")).get("filledColor").toString();
-		Color filledColor = Color.decode(filledColorString);
-		String strokedColorString = ((JSONObject)shapeTmp.get("color")).get("strokedColor").toString();
-		Color strokedColor = Color.decode(strokedColorString);
-		
-		ColorAttributes colorAttributes = new ColorAttributes(filled, stroked, filledColor, strokedColor);
-		SRectangle rectangle = new SRectangle(loc, width, height);
-		
-		rectangle.addAttributes(colorAttributes);
-		rectangle.addAttributes(new SelectionAttributes());
-		
-		return rectangle;*/
-		return null;
+		System.out.println("Successfully reading JSON Object...");
+		System.out.println("\nJSON Object: " + obj);
+		return res;
+	}
+	*/
+	/**
+	 * Permet de lire le contenu d'un fichier .json dont le nom est le parametre file_Name et d'en renvoyer le contenu
+	 * @param file_Path
+	 * String qui correspond au path du fichier .json
+	 * @param file_Name
+	 * String qui correspond au nom du fichier .json
+	 * @return
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 * @throws ParseException
+	 */
+	public String[] readImageFromJson(String file_Path, String file_Name) throws FileNotFoundException, IOException, ParseException {
+		String[] res = null;
+		JSONParser parser = new JSONParser();
+		String folder = file_Path.split(file_Name)[0];
+		String fileStr = folder + file_Name.split("\\.")[0] + "_" + file_Name.split("\\.")[1] + ".json";
+		Object obj = parser.parse(
+				new FileReader(fileStr));
+		JSONObject jsonObject = (JSONObject) obj;
+
+		String filePath = jsonObject.get("filePath").toString();
+		res[res.length] = filePath;
+		String fileName = jsonObject.get("fileName").toString();
+		res[res.length] = fileName;
+		String key = jsonObject.get("clef").toString();
+		res[res.length] = key;
+		String encryptedString = jsonObject.get("encryptedString").toString();
+		res[res.length] = encryptedString;
+
+		System.out.println("Successfully reading JSON Object...");
+		System.out.println("\nJSON Object: " + obj);
+		return res;
 	}
 	
-	/*public Shape createTexte(JSONObject shapeTmp) {
-		Point loc = new Point(Integer.parseInt(((JSONObject)shapeTmp.get("prop")).get("x").toString()), Integer.parseInt(((JSONObject)shapeTmp.get("prop")).get("y").toString()));
-		String text = ((JSONObject)shapeTmp.get("prop")).get("text").toString();
+	
+	
+	/**
+	 * writeImageModelJSONFile cree un fichier .json contenant le chemin du fichier, le nom du fichier, la clef et le Dtring correspondant au tableau de Bytes crptes
+	 * @param filePath
+	 * String correspondant au chemin du fichier
+	 * @param fileName
+	 * String correspondant au nom du fichier
+	 * @param key
+	 * String correspondant a la clef pour l'algorithme de cryptage
+	 * @param encryptedString
+	 * String correspondant au tableau de Bytes cryptes
+	 * @throws IOException
+	 */
+	/*
+	public void writeImageModelJSONFile(String filePath, String fileName, String key, String encryptedString)
+			throws IOException {
+		JSONObject obj = new JSONObject();
+		obj.put("filePath", filePath);
+		obj.put("fileName", fileName);
+		obj.put("clef", key);
+		obj.put("encryptedString", encryptedString);
+
+		// try-with-resources statement based on post comment below :)
+		try (FileWriter file = new FileWriter(
+				"res-test/" + fileName.split("\\.")[0] + "_" + fileName.split("\\.")[1] + ".json")) {
+			file.write(obj.toJSONString());
+			System.out.println("Successfully Copied JSON Object to File...");
+			System.out.println("\nJSON Object: " + obj);
+		}
+	}
+	*/
+	
+	/**
+	 * Cree un fichier .json contenant le chemin du fichier, le nom du fichier, la clef et le String correspondant au tableau de Bytes crpte
+	 * @param filePath
+	 * String correspondant au chemin du fichier
+	 * @param fileName
+	 * String correspondant au nom du fichier
+	 * @param key
+	 * String correspondant a la clef pour l'algorithme de cryptage
+	 * @param encryptedString
+	 * String correspondant au tableau de Bytes cryptes
+	 * @return String[] contenant le path du dossier du fichier json ainsi que le nom du fichier json
+	 * @throws IOException
+	 */
+	public String[] writeImageModelJSONFile(String filePath, String fileName, String key, String encryptedString)
+			throws IOException {
+		JSONObject obj = new JSONObject();
+		obj.put("filePath", filePath);
+		obj.put("fileName", fileName);
+		obj.put("clef", key);
+		obj.put("encryptedString", encryptedString);
+
+		// try-with-resources statement based on post comment below :)
+		String folder = filePath.split(fileName)[0];
+		String fileStr = fileName.split("\\.")[0] + "_" + fileName.split("\\.")[1] + ".json";
+		String totalFile = folder + fileStr;//fileName.split("\\.")[0] + "_" + fileName.split("\\.")[1] + ".json";
+		try (FileWriter file = new FileWriter(totalFile)) {
+			file.write(obj.toJSONString());
+			System.out.println("Successfully Copied JSON Object to File...");
+			System.out.println("\nJSON Object: " + obj);
+		}
 		
-		boolean filled = Boolean.parseBoolean(((JSONObject)shapeTmp.get("color")).get("filled").toString());
-		boolean stroked = Boolean.parseBoolean(((JSONObject)shapeTmp.get("color")).get("stroked").toString());
-		String filledColorString = ((JSONObject)shapeTmp.get("color")).get("filledColor").toString();
-		Color filledColor = Color.decode(filledColorString);
-		String strokedColorString = ((JSONObject)shapeTmp.get("color")).get("strokedColor").toString();
-		Color strokedColor = Color.decode(strokedColorString);
-		
-		String fontNameString = ((JSONObject)shapeTmp.get("font")).get("name").toString();
-		String fontStyleString = ((JSONObject)shapeTmp.get("font")).get("style").toString();
-		int fontSize = Integer.parseInt(((JSONObject)shapeTmp.get("font")).get("size").toString());
-		Font font = Font.decode(fontNameString + "-" + fontStyleString + "-" + fontSize);
-		String fontColorString = ((JSONObject)shapeTmp.get("font")).get("color").toString();
-		Color fontColor = Color.decode(fontColorString);
-		
-		ColorAttributes colorAttributes = new ColorAttributes(filled, stroked, filledColor, strokedColor);
-		FontAttributes fontAttributes = new FontAttributes(font, fontColor);
-		SText texte = new SText(loc, text);
-		
-		texte.addAttributes(colorAttributes);
-		texte.addAttributes(fontAttributes);
-		texte.addAttributes(new SelectionAttributes());
-		return texte;
-	}*/
+		String[] res = {folder, fileStr};
+		return res;
+	}
+	
 }

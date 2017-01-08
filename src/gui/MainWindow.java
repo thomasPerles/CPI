@@ -203,7 +203,8 @@ public class MainWindow {
 		JButton btnDecrypt = new JButton("Decrypt");
 		btnDecrypt.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				DecryptionWindow dw = new DecryptionWindow();
+				//DecryptionWindow dw = new DecryptionWindow();
+				DecryptionWindow dw = new DecryptionWindow(view, fileName, path, model);
 				dw.setVisible(true);
 			}
 		});

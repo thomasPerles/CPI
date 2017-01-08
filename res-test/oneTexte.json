@@ -1,0 +1,24 @@
+{
+	"shapes" : [
+		{
+			"class" : "Texte",
+			"prop" : {
+				"x" : 100,
+				"y" : 100,
+				"text" : "ça marche!\nsuper!"
+			},
+			"color" : {
+				"filled" : "true",
+				"stroked" : "true",
+				"filledColor" : "#ff0000",
+				"strokedColor" : "#00ff00"
+			},
+			"font" : {
+				"name" : "Arial",
+				"style" : "BOLD",
+				"size" : 50,
+				"color" : "#0000ff"
+			}
+		}
+	]
+}
