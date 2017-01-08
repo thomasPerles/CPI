@@ -137,9 +137,10 @@ public class EncryptionWindow
 		{
 
 			@Override
+
 			public void actionPerformed(ActionEvent e)
 			{
-				System.out.println("début crypto");
+				System.out.println("debut crypto");
 
 				if (passwordTextField.getText() != null)
 					password = passwordTextField.getText();
@@ -185,7 +186,7 @@ public class EncryptionWindow
 					// ...
 					// sauvegarder limage et supprimer le json
 
-					// recrée l'image avec les RGB originaux
+					// recrÃ©e l'image avec les RGB originaux
 					/*
 					 * File outputfile = new File("saved.jpg"); try {
 					 * ImageIO.write(createBufferedImage(rgbs, image.getWidth(),
@@ -404,7 +405,7 @@ public class EncryptionWindow
 	 *            int la largeur de l'image
 	 * @param height
 	 *            int la hauteur de l'image
-	 * @return BufferedImage buff est l'image reconstituee avec les paramètres
+	 * @return BufferedImage buff est l'image reconstituee avec les paramÃ¨tres
 	 *         d'entree
 	 */
 	public static BufferedImage createBufferedImage(int[][] rgbs, int width, int height)
