@@ -51,9 +51,6 @@ public class WindowController implements ItemListener {
 				if (next.equals("selectZone")) {
 
 					if (jb.isSelected()) {
-
-						// D�sactiver toutes fonctionalit� autre que la
-						// s�lection de zones
 						for (Iterator<String> it2 = components.keySet().iterator(); it2.hasNext();) {
 							String next2 = it2.next();
 							if (!next2.equals("selectZone"))
@@ -61,7 +58,6 @@ public class WindowController implements ItemListener {
 						}
 						this.nziController.setModel(null);
 						this.nziController.setView(null);
-						// Activer les fonctionalit�s de s�lection de zones
 						this.sziController.setModel(this.model);
 						this.sziController.setView(this.view);
 					} else {
@@ -73,9 +69,6 @@ public class WindowController implements ItemListener {
 				if (next.equals("newZone")) {
 
 					if (jb.isSelected()) {
-						// D�sactiver toutes fonctionalit� autre que la cr�ation
-						// de
-						// zones
 						for (Iterator<String> it2 = components.keySet().iterator(); it2.hasNext();) {
 							String next2 = it2.next();
 							if (!next2.equals("newZone"))
@@ -83,7 +76,6 @@ public class WindowController implements ItemListener {
 						}
 						this.sziController.setModel(null);
 						this.sziController.setView(null);
-						// Activer les fonctionnalit�s de cr�ation de zones
 						this.nziController.setModel(this.model);
 						this.nziController.setView(this.view);
 					} else {

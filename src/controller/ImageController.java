@@ -33,7 +33,6 @@ public abstract class ImageController implements MouseListener, MouseMotionListe
 			this.view.addMouseListener(this);
 			this.view.addMouseMotionListener(this);
 			this.view.addKeyListener(this);
-			//System.out.println("Listeners added");
 		}
 		if (view == null && this.view != null) {
 			this.view.removeMouseListener(this);
