@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="javadoc">
+    <target name="javadoc">
+        <javadoc access="public" author="true" classpath="json-simple.jar;commons-codec-1.10.jar" destdir="doc" doctitle="CPI Javadoc" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" packagenames="gui,main,model,controller,view" source="1.8" sourcepath="src" splitindex="true" use="true" version="true">
+            <link href="file:/C:/Users/Tom/git/CPI/doc/"/>
+        </javadoc>
+    </target>
+</project>
