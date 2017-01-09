@@ -5,9 +5,7 @@ import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.ListIterator;
 
 import view.ImageView;
 
@@ -44,14 +42,10 @@ public class SelectZoneImageController extends ImageController {
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -78,7 +72,6 @@ public class SelectZoneImageController extends ImageController {
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-
 	}
 
 	@Override
@@ -95,8 +88,6 @@ public class SelectZoneImageController extends ImageController {
 
 	@Override
 	public void mouseMoved(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -115,14 +106,10 @@ public class SelectZoneImageController extends ImageController {
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void keyTyped(KeyEvent e) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override

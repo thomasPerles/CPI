@@ -30,6 +30,11 @@ public class ImageView extends Canvas implements Runnable {
 		return selectingRectangles;
 	}
 
+	public ArrayList<Rectangle> getPreparedRectangles()
+	{
+		return preparedRectangles;
+	}
+
 	public void setSelectingRectangles(boolean selectingRectangles) {
 		this.selectingRectangles = selectingRectangles;
 	}
@@ -69,23 +74,15 @@ public class ImageView extends Canvas implements Runnable {
 	
 	@Override
 	public void run() {
-		/*
-		JFrame f = new JFrame();
-		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setBounds(new Rectangle(0, 0, model.getImage().getWidth(), model.getImage().getHeight()));
-		f.setMinimumSize(new Dimension(model.getImage().getWidth(), model.getImage().getHeight()));
-		f.add(this);
-		f.setAlwaysOnTop(true);
-		f.setLocationRelativeTo(this);
-		f.setVisible(true);
-		*/
 	}
+
 	
-	/*
-	 * Paint existing rectangles and selected rectangle.
-	 * 
-	 * Boolean parameter determines whether selected rectangle is being created
-	 * or has been selected, in which case its color will be Color.ORANGE.
+	/**
+	 * Affiche les rectangles selectionnes et existants
+	 * @param selectedRect
+	 * Rectangle : rectangle selectionne
+	 * @param selectingRectangles
+	 * Boolean : indique si le rectangle est en train d'etre cree ou s'il est selectionne
 	 */
 	public void paintRectangles(Rectangle selectedRect, Boolean selectingRectangles) {
 		this.selectedRect = selectedRect;
@@ -121,32 +118,10 @@ public class ImageView extends Canvas implements Runnable {
 		else
 			throw new Exception("Cannot remove non-existent rectangle!");
 	}
-	/*
-	 * public void setResizingFactorX(int resizedWidth) {
-	 * 
-	 * double resizeFactorX = (double) oldWidth / (double) resizedWidth;
-	 * 
-	 * for (Iterator<Rectangle> it = this.rectangles.iterator(); it.hasNext();)
-	 * { Rectangle rectangle = it.next();
-	 * 
-	 * rectangle.setBounds((int) (rectangles.get(rectangle).x * resizeFactorX),
-	 * rectangle.y, (int) (rectangles.get(rectangle).width * resizeFactorX),
-	 * rectangle.height); } System.out.println(rectangles); }
-	 * 
-	 * public void setResizingFactorY(int resizedHeight) {
-	 * 
-	 * double resizeFactorY = (double) oldHeight / (double) resizedHeight;
-	 * 
-	 * for (Iterator<Rectangle> it = this.rectangles.iterator(); it.hasNext();)
-	 * { Rectangle rectangle = it.next();
-	 * 
-	 * rectangle.setBounds(rectangle.x, (int) (rectangles.get(rectangle).y *
-	 * resizeFactorY), rectangle.width, (int) (rectangles.get(rectangle).height
-	 * * resizeFactorY));
-	 * 
-	 * } System.out.println(rectangles); }
-	 */
 
+	/**
+	 * Affiche l'etat des rectangles par rapport a l'ecran
+	 */
 	public String toString() {
 		StringBuilder res = new StringBuilder();
 		for (Iterator<Rectangle> it = rectangles.iterator(); it.hasNext();) {
@@ -156,6 +131,10 @@ public class ImageView extends Canvas implements Runnable {
 		return res.toString();
 	}
 	
+	/**
+	 * Affiche la liste des rectangles adaptes aux dimensions de la fenetre
+	 * @return
+	 */
 	public String preparedRectanglesToString() {
 		StringBuilder res = new StringBuilder();
 		for(Iterator<Rectangle> it = preparedRectangles.iterator(); it.hasNext();)
@@ -174,19 +153,16 @@ public class ImageView extends Canvas implements Runnable {
 		return this.rectangles;
 	}
 
+	/**
+	 * Adapte les rectangles en fonction de la taille de la fenetre
+	 */
 	public void prepareRectangles() {
-		
-		System.out.println(toString());
-		
 		preparedRectangles = new ArrayList<Rectangle>();
 		Rectangle preparedRectangle = null;
 
 		double resizeFactorX = (double) this.model.getImage().getWidth() / (double) this.getWidth();
 		double resizeFactorY = (double) this.model.getImage().getHeight() / (double) this.getHeight();
 		
-		System.out.println("Resize factor x : " + resizeFactorX);
-		System.out.println("Resize factor y : " + resizeFactorY);
-
 		for (Iterator<Rectangle> it = rectangles.iterator(); it.hasNext();) {
 			Rectangle rectangle = it.next();
 			preparedRectangle = new Rectangle();
@@ -195,7 +171,5 @@ public class ImageView extends Canvas implements Runnable {
 			
 			preparedRectangles.add(preparedRectangle);
 		}
-		
-		System.out.println(preparedRectanglesToString());
 	}
 }

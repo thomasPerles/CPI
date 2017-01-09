@@ -20,8 +20,6 @@ public class Main {
 					ImageModel model = new ImageModel();
 					ImageView view = new ImageView(model);
 
-					// Desactiver les fonctionalites d'interaction tant qu'une
-					// image n'est pas chargee
 					NewZoneImageController nziController = new NewZoneImageController();
 					SelectZoneImageController sziController = new SelectZoneImageController();
 
@@ -30,7 +28,7 @@ public class Main {
 					MainWindow window = new MainWindow(model, view, wcontroller);
 
 					window.getFrame().setVisible(true);
-
+					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

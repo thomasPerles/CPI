@@ -36,9 +36,6 @@ public class MainWindow {
 	private JToggleButton btnNewZones;
 	private JToggleButton btnSelectZones;
 	private JButton btnSelectAll;
-	// private JButton btnLoadImage;
-	// private JButton btnEncrypt;
-	// private JButton btnDecrypt;
 
 	private ImageModel model;
 	private ImageView view;
@@ -69,14 +66,9 @@ public class MainWindow {
 		btnSelectAll.setEnabled(true);
 	}
 
-	private void disableButtons() {
-		btnNewZones.setEnabled(false);
-		btnSelectZones.setEnabled(false);
-		btnSelectAll.setEnabled(false);
-	}
 
 	/*
-	 * Vérifie les dimensions de l'image chargée dans la vue et adapte
+	 * Verifie les dimensions de l'image chargee dans la vue et adapte
 	 * l'affichage
 	 */
 	private void checkBounds() {
@@ -104,57 +96,29 @@ public class MainWindow {
 				// scale width to maintain aspect ratio
 				new_width = (new_height * original_width) / original_height;
 			}
-			
-			// this.view.setOldWidth(this.view.getWidth());
-			// this.view.setOldHeight(this.view.getHeight());
-			
 			this.view.setBounds((int) ((double) this.imagePortal.getWidth() / 2 - (double) new_width / 2),
 					(int) ((double) this.imagePortal.getHeight() / 2 - (double) new_height / 2), new_width,
 					new_height);
 			
 			this.view.setRectangles(new ArrayList<Rectangle>());
-			
-			// Ne marche pas
-			/*
-			if(this.view.getOldWidth() != new_width)
-				this.view.setResizingFactorX(new_width);
-			if(this.view.getOldHeight() != new_height)
-				this.view.setResizingFactorY(new_height);
-			*/
 		}
 	}
 
+	/**
+	 * updateImageModel charge et affiche l'image passee en parametre
+	 * @param file
+	 * File : l'image a afficher
+	 */
 	private void updateImageModel(File file) {
 		
-		this.model.loadByPixel(file.getAbsolutePath());
+		this.model.loadImage(file.getAbsolutePath());
 		checkBounds();
 		this.view.repaint();
-
-		/*
-		 * ImageIcon imageIcon = new ImageIcon(fichier.toString()); if
-		 * (imageIcon.getIconWidth() > view.getWidth()) { float height =
-		 * imageIcon.getIconHeight(); float width = imageIcon.getIconWidth();
-		 * Image image = imageIcon.getImage(); // transform it Image newimg =
-		 * image.getScaledInstance(view.getWidth(), (int) (height *
-		 * (view.getWidth() / width)), java.awt.Image.SCALE_SMOOTH); // scale //
-		 * way imageIcon = new ImageIcon(newimg); // transform it back } if
-		 * (imageIcon.getIconHeight() > view.getHeight()) { float height =
-		 * imageIcon.getIconHeight(); float width = imageIcon.getIconWidth();
-		 * Image image = imageIcon.getImage(); // transform it Image newimg =
-		 * image.getScaledInstance((int) (width * (view.getHeight() / height)),
-		 * view.getHeight(), java.awt.Image.SCALE_SMOOTH); // scale // way
-		 * imageIcon = new ImageIcon(newimg); // transform it back }
-		 * 
-		 * if (imageIcon.getIconHeight() > 0) { allowButton(); } else {
-		 * imageIcon = new ImageIcon("res/bg.gif"); disableButton(); }
-		 * 
-		 * 
-		 * lblImage.setIcon(imageIcon);
-		 * 
-		 * frame.repaint();
-		 */
 	}
 
+	/**
+	 * ajoute les composants a la fenetre
+	 */
 	public void addContentsToPane() {
 		
 		Container pane = frame.getContentPane();
@@ -203,7 +167,6 @@ public class MainWindow {
 		JButton btnDecrypt = new JButton("Decrypt");
 		btnDecrypt.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				//DecryptionWindow dw = new DecryptionWindow();
 				DecryptionWindow dw = new DecryptionWindow(view, fileName, path, model);
 				dw.setVisible(true);
 			}
@@ -225,6 +188,15 @@ public class MainWindow {
 		btnSelectAll.setToolTipText("Select all image");
 		btnSelectAll.setEnabled(false);
 		buttons.add(btnSelectAll);
+		btnSelectAll.addActionListener(new ActionListener() {
+			//
+			public void actionPerformed(ActionEvent arg0) {
+				ArrayList<Rectangle> rectangle = new ArrayList<Rectangle>();
+				rectangle.add(new Rectangle(0,0,model.getImage().getWidth(),model.getImage().getHeight()));
+				view.setRectangles(rectangle);
+				view.repaint();
+			}
+		});
 
 		// Button to select zones
 		Icon mousePointer = new ImageIcon("res/mouse.png");
@@ -240,6 +212,9 @@ public class MainWindow {
 		
 	}
 
+	/**
+	 * lancement de la fenetre
+	 */
 	private void initialize() {
 
 		setFrame(new JFrame("PIE - Partial Image Encryption"));
@@ -258,28 +233,32 @@ public class MainWindow {
 
 			@Override
 			public void componentHidden(ComponentEvent arg0) {
-				// TODO Auto-generated method stub
-				
 			}
 
 			@Override
 			public void componentMoved(ComponentEvent arg0) {
-				// TODO Auto-generated method stub
-				
 			}
 
 			@Override
 			public void componentShown(ComponentEvent arg0) {
-				// TODO Auto-generated method stub
-				
 			}
 		});
 	}
 
+	/**
+	 * getFrame renvoie la fenetre
+	 * @return
+	 * JFrame : la fenetre renvoye
+	 */
 	public JFrame getFrame() {
 		return frame;
 	}
 
+	/**
+	 * setFrame modifie la fenetre
+	 * @param frame
+	 * JFrame : la fenetre a utiliser
+	 */
 	public void setFrame(JFrame frame) {
 		this.frame = frame;
 	}
