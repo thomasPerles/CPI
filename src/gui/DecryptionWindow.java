@@ -135,10 +135,7 @@ public class DecryptionWindow {
 				} catch (IOException | ParseException e1) {
 					e1.printStackTrace();
 				}
-				String filePath = jsonString[0];
-				String file_Name = jsonString[1];
 				String encryptedString = jsonString[2];
-				String publicKey = jsonString[3];
 				String privateKey = jsonString[4];
 				String sessionKey = jsonString[5];
 
@@ -158,7 +155,7 @@ public class DecryptionWindow {
 					if(test.equals(test2))
 					{
 						String initVector = "RandomInitVector";
-						String result = newDecrypt(password, initVector, encryptedString, passwordKey);
+						String result = newDecrypt(initVector, encryptedString, passwordKey);
 						model.rebuildImage(result);
 						view.repaint();
 						model.saveIMG(path, fileName.split("\\.")[1]);
@@ -181,7 +178,18 @@ public class DecryptionWindow {
 		});
 	}
 	
-	public String newDecrypt(String key, String initVector, String encrypted, SecretKey aesKey) {
+	/**
+	 * newDecrypt l'algorithme qui utilise AES pour decrypter le String encrypted avec comme parametres le String initVector et la SecretKey aesKey 
+	 * @param initVector
+	 * String utilise pour specifier IvParameterSpec 
+	 * @param encrypted
+	 * String a decrypter
+	 * @param aesKey
+	 * SecretKey utilisee pour crypter
+	 * @return
+	 * String le resultat du dechiffrage
+	 */
+	public String newDecrypt(String initVector, String encrypted, SecretKey aesKey) {
 		try {
 			IvParameterSpec iv = new IvParameterSpec(initVector.getBytes("UTF-8"));
 
@@ -254,16 +262,39 @@ public class DecryptionWindow {
 		zipFile1.renameTo(imgFile);
 	}
 	
+	/**
+	 * convert convertit un String en tableau de bytes
+	 * @param string
+	 * String le String converti en tableau de bytes
+	 * @return
+	 * byte[] le tableau de bytes converti 
+	 */
 	public static byte[] convert(String string)
 	{
 		return Base64.getDecoder().decode(string);
 	}
 	
+	/**
+	 * convert convertit une SecretKey en String
+	 * @param key
+	 * SecretKey qui est converti en String
+	 * @return
+	 * String la SecretKey converti
+	 */
 	public static String convert(SecretKey key)// byte[] encryptedBytes)
 	{
 		return Base64.getEncoder().encodeToString(key.getEncoded());
 	}
 	
+	/**
+	 * encryptionPassword cree une SecretKey a partir d'un mot de passe passe en parametre avec l'algorithme PBE
+	 * @param password
+	 * String le mot de passe passe en parametre
+	 * @return
+	 * SecretKey la clef utilisee par l'algorithme a clef symetrique
+	 * @throws NoSuchAlgorithmException
+	 * @throws InvalidKeySpecException
+	 */
 	private SecretKey encryptionPassword(String password) throws NoSuchAlgorithmException, InvalidKeySpecException {
 		char[] pswd = password.toCharArray();
 		byte[] salt = { (byte) 0xA9, (byte) 0x9B, (byte) 0xC8, (byte) 0x32, (byte) 0x56, (byte) 0x34, (byte) 0xE3,
@@ -275,7 +306,16 @@ public class DecryptionWindow {
 		return secret;
 	}
 	
-
+	/**
+	 * decrypt applique l'algorithme RSA avec la clef key sur le tableau de bytes inpbytes
+	 * @param inpBytes
+	 * byte[] le tableau de bytes a decrypter
+	 * @param key
+	 * PrivateKey pour utiliser l'algorithme RSA
+	 * @return
+	 * byte[] le tableau de bytes decrypte
+	 * @throws Exception
+	 */
 	private byte[] decrypt(byte[] inpBytes, PrivateKey key) throws Exception {
 		Cipher cipher = Cipher.getInstance("RSA");
 		cipher.init(Cipher.DECRYPT_MODE, key);

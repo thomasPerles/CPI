@@ -104,6 +104,11 @@ public class MainWindow {
 		}
 	}
 
+	/**
+	 * updateImageModel charge et affiche l'image passee en parametre
+	 * @param file
+	 * File : l'image a afficher
+	 */
 	private void updateImageModel(File file) {
 		
 		this.model.loadImage(file.getAbsolutePath());
@@ -111,6 +116,9 @@ public class MainWindow {
 		this.view.repaint();
 	}
 
+	/**
+	 * ajoute les composants a la fenetre
+	 */
 	public void addContentsToPane() {
 		
 		Container pane = frame.getContentPane();
@@ -204,6 +212,9 @@ public class MainWindow {
 		
 	}
 
+	/**
+	 * lancement de la fenetre
+	 */
 	private void initialize() {
 
 		setFrame(new JFrame("PIE - Partial Image Encryption"));
@@ -234,10 +245,20 @@ public class MainWindow {
 		});
 	}
 
+	/**
+	 * getFrame renvoie la fenetre
+	 * @return
+	 * JFrame : la fenetre renvoye
+	 */
 	public JFrame getFrame() {
 		return frame;
 	}
 
+	/**
+	 * setFrame modifie la fenetre
+	 * @param frame
+	 * JFrame : la fenetre a utiliser
+	 */
 	public void setFrame(JFrame frame) {
 		this.frame = frame;
 	}

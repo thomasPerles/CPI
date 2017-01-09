@@ -154,33 +154,33 @@ public class EncryptionWindow {
 
 						byte[] dataBytes = aesKey.getEncoded();
 						// Creation du tableau d'octets chiffre par RSA
-						byte[] encBytes = encrypt(dataBytes, pubk, "RSA");
+						byte[] encBytes = encrypt(dataBytes, pubk);
 
 						String sessionKey = convert(encBytes);
 						String privateKey = convert(prvk.getEncoded());
 						String publicKey = convert(pubk.getEncoded());
 						String initVector = "RandomInitVector";
-						String encryptedString = newEncrypt(password, initVector, rgbString, aesKey);
+						String encryptedString = newEncrypt(initVector, rgbString, aesKey);
 
 						String[] json = null;
-						json = imageModelJSON.writeImageModelJSONFile(path, fileName, encryptedString,
-								publicKey, privateKey, sessionKey);
-						
+						json = imageModelJSON.writeImageModelJSONFile(path, fileName, encryptedString, publicKey,
+								privateKey, sessionKey);
+
 						String extension = fileName.split("\\.")[1];
 						model.saveIMG(path, extension);
-						
+
 						String jsonFolder = json[0];
 						String jsonName = json[1];
 						String imageFolderPath = path.split(fileName)[0];
 						hideZipInImage(imageFolderPath, fileName, jsonFolder, jsonName);
-						
+
 					} catch (IOException e1) {
 						e1.printStackTrace();
 					} catch (NoSuchAlgorithmException e2) {
 						e2.printStackTrace();
 					} catch (Exception e1) {
 						e1.printStackTrace();
-					}				
+					}
 				}
 				frame.setVisible(false);
 				frame.dispose();
@@ -192,26 +192,36 @@ public class EncryptionWindow {
 		});
 
 	}
-	
-	
-	/**
-	 * encryptionPassword genere une clef avec l'algorithme xxxxx en utilisant
-	 * le password
-	 * 
-	 * @param password
-	 *            String qui est crypte avec l'algorithme xxxx
-	 * @return SecretKey aesKey la clef genere par l'algorithme xxxx depuis le
-	 *         password
-	 * @throws NoSuchAlgorithmException
-	 * @throws InvalidKeySpecException
-	 */
 
-	private byte[] encrypt(byte[] inpBytes, PublicKey key, String xform) throws Exception {
-		Cipher cipher = Cipher.getInstance(xform);
+	/**
+	 * encrypt cree le tableau d'octets chiffres en utilisant l'algorithme RSA
+	 * avec comme parametres la clef de session converti en tableau d'octets et
+	 * la clef publique
+	 * 
+	 * @param inpBytes
+	 *            byte[] la clef de session converti en tableau d'octets
+	 * @param key
+	 *            PublicKey la clef publique
+	 * @return byte[] le tableau de bytes chiffres
+	 * @throws Exception
+	 */
+	private byte[] encrypt(byte[] inpBytes, PublicKey key) throws Exception {
+		Cipher cipher = Cipher.getInstance("RSA");
 		cipher.init(Cipher.ENCRYPT_MODE, key);
 		return cipher.doFinal(inpBytes);
 	}
 
+	/**
+	 * encryptionPassword genere une clef avec l'algorithme PBE en utilisant le
+	 * password
+	 * 
+	 * @param password
+	 *            String qui est crypte avec l'algorithme PBE
+	 * @return SecretKey secret la clef genere par l'algorithme PBE depuis le
+	 *         password
+	 * @throws NoSuchAlgorithmException
+	 * @throws InvalidKeySpecException
+	 */
 	private SecretKey encryptionPassword(String password) throws NoSuchAlgorithmException, InvalidKeySpecException {
 		char[] pswd = password.toCharArray();
 		byte[] salt = { (byte) 0xA9, (byte) 0x9B, (byte) 0xC8, (byte) 0x32, (byte) 0x56, (byte) 0x34, (byte) 0xE3,
@@ -222,8 +232,19 @@ public class EncryptionWindow {
 		SecretKey secret = new SecretKeySpec(sessionKey.getEncoded(), "AES");
 		return secret;
 	}
-	
-	public String newEncrypt(String key, String initVector, String value, SecretKey aesKey) {
+
+	/**
+	 * newEncrypt genere un String representant le contenu chiffre de la matrice rgb en utilisant l'algorithme AES avec comme parametres le String initVector, le String value a crypter et la SecretKey
+	 * @param initVector
+	 * String le vecteur initial
+	 * @param value
+	 * String le contenu a chiffrer avec AES
+	 * @param aesKey
+	 * SecretKey pour l'algorithme AES
+	 * @return
+	 * String le contenu chiffre
+	 */
+	public String newEncrypt(String initVector, String value, SecretKey aesKey) {
 		try {
 			IvParameterSpec iv = new IvParameterSpec(initVector.getBytes("UTF-8"));
 
@@ -231,7 +252,7 @@ public class EncryptionWindow {
 			cipher.init(Cipher.ENCRYPT_MODE, aesKey, iv);
 
 			byte[] encrypted = cipher.doFinal(value.getBytes());
-		
+
 			return org.apache.commons.codec.binary.Base64.encodeBase64String(encrypted);
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -239,7 +260,7 @@ public class EncryptionWindow {
 
 		return null;
 	}
-	
+
 	/**
 	 * Convertit une SecretKey en String
 	 * 
@@ -249,18 +270,23 @@ public class EncryptionWindow {
 	 */
 	public static String convert(SecretKey key)// byte[] encryptedBytes)
 	{
-		// Get string representation of byte array of SecretKey
 		return Base64.getEncoder().encodeToString(key.getEncoded());
 	}
 
+	/**
+	 * convert convertit un tableau d'octets en String
+	 * @param encryptedBytes
+	 * byte[] a convertir en String
+	 * @return
+	 * String converti
+	 */
 	public static String convert(byte[] encryptedBytes) {
 		return Base64.getEncoder().encodeToString(encryptedBytes);
 	}
 
-	
 	/**
-	 * getRGBToString genere le String a crypter : "/" pour les pixels a ne pas
-	 * crypter et la valeur en Bytes pour les pixels a crypter
+	 * getRGBToString genere le String a crypter : "0" pour les pixels a ne pas
+	 * crypter et la valeur en Bytes pour les pixels a crypter. Les pixels sont separes par un "/"
 	 * 
 	 * @param image
 	 *            BufferedImage l'image a crypter
@@ -293,34 +319,6 @@ public class EncryptionWindow {
 			}
 		}
 		return res;
-	}
-
-	/**
-	 * createBufferedImage genere une image a partir d'un tableau de pixels et
-	 * des dimensions de l'image
-	 * 
-	 * @param rgbs
-	 *            int[][] le tableau de pixels de l'image
-	 * @param width
-	 *            int la largeur de l'image
-	 * @param height
-	 *            int la hauteur de l'image
-	 * @return BufferedImage buff est l'image reconstituee avec les paramètres
-	 *         d'entree
-	 */
-	public static BufferedImage createBufferedImage(int[][] rgbs, int width, int height) {
-		BufferedImage buff = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-		for (int i = 0; i < width; i++) {
-			for (int j = 0; j < height; j++) {
-				buff.setRGB(i, j, rgbs[i][j]);
-			}
-		}
-		return buff;
-
-		/*
-		 * File outputfile = new File("saved.png"); ImageIO.write(bi, "png",
-		 * outputfile);
-		 */
 	}
 
 	/**

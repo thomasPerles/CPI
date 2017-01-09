@@ -14,9 +14,13 @@ public class ImageModel {
 	private BufferedImage image;
 
 	public ImageModel() {
-		//image = new BufferedImage(344, 455, BufferedImage.TYPE_INT_RGB);
 	}
-
+	
+	/**
+	 * constructeur de la classe imageModel avec le String path 
+	 * @param path
+	 * String representant le path du fichier
+	 */
 	public ImageModel(String path) {
 		loadImage(path);
 	}
@@ -30,8 +34,7 @@ public class ImageModel {
 	 */
 	public void saveIMG(String file, String extension) {
 		try {
-			//ImageIO.write((RenderedImage) image, extension, new File(file.split("\\."+extension)[0]+"test."+extension));
-			ImageIO.write(image, extension.toUpperCase(), new File(file));//.split("\\."+extension)[0]+"1"+"."+extension));
+			ImageIO.write(image, extension.toUpperCase(), new File(file));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -96,8 +99,11 @@ public class ImageModel {
 				image.setRGB(i, j, p);
 			}
 	}
+	
 	/**
 	 * Affiche le contenu de l'image
+	 * @return
+	 * String le contenu de l'image
 	 */
 	public String toString() {
 		StringBuilder res = new StringBuilder();
@@ -113,33 +119,42 @@ public class ImageModel {
 			res.append('\t').append(']');
 			res.append('\n');
 		}
-
 		return res.toString();
 	}
 	
+	/**
+	 * getImage renvoie l'image
+	 * @return
+	 * BufferedImage l'image renvoye
+	 */
 	public BufferedImage getImage() {
 		return image;
 	}
 
+	/**
+	 * setImage modifie l'image
+	 * @param image
+	 * BufferedImage l'image utilisee
+	 */
 	public void setImage(BufferedImage image) {
 		this.image = image;
 	}
 	
+	/**
+	 * rebuildImage reconstitue l'image originale a partir du contenu dechiffre 
+	 * @param string
+	 * String le contenu dechiffre a reconstituer
+	 */
 	public void rebuildImage(String string)
 	{
 		String[] pixels = string.split("/");
-
-		
 		for(int i = 0; i < pixels.length; i++)
 		{
 			int width = i / image.getHeight();
-
 			if(!pixels[i].equals("0"))
 			{
 				image.setRGB(width, i % image.getHeight(), Integer.parseInt(pixels[i]));
 			}
-				
 		}
-		
 	}
 }

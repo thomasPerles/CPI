@@ -51,10 +51,14 @@ public class ImageModelJSON {
 	 *            String correspondant au chemin du fichier
 	 * @param fileName
 	 *            String correspondant au nom du fichier
-	 * @param key
-	 *            String correspondant a la clef pour l'algorithme de cryptage
 	 * @param encryptedString
 	 *            String correspondant au tableau de Bytes cryptes
+ 	 * @param publicKey
+	 *            String correspondant a la clef publique pour l'algorithme de cryptage
+	 * @param privateKey
+	 *            String correspondant a la clef privee pour l'algorithme de cryptage
+	 * @param sessionKey
+	 *            String correspondant a la clef de session pour l'algorithme de cryptage
 	 * @return String[] contenant le path du dossier du fichier json ainsi que
 	 *         le nom du fichier json
 	 * @throws IOException
