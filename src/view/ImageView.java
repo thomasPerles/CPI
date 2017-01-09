@@ -74,16 +74,6 @@ public class ImageView extends Canvas implements Runnable {
 	
 	@Override
 	public void run() {
-		/*
-		JFrame f = new JFrame();
-		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setBounds(new Rectangle(0, 0, model.getImage().getWidth(), model.getImage().getHeight()));
-		f.setMinimumSize(new Dimension(model.getImage().getWidth(), model.getImage().getHeight()));
-		f.add(this);
-		f.setAlwaysOnTop(true);
-		f.setLocationRelativeTo(this);
-		f.setVisible(true);
-		*/
 	}
 
 	
@@ -128,31 +118,6 @@ public class ImageView extends Canvas implements Runnable {
 		else
 			throw new Exception("Cannot remove non-existent rectangle!");
 	}
-	/*
-	 * public void setResizingFactorX(int resizedWidth) {
-	 * 
-	 * double resizeFactorX = (double) oldWidth / (double) resizedWidth;
-	 * 
-	 * for (Iterator<Rectangle> it = this.rectangles.iterator(); it.hasNext();)
-	 * { Rectangle rectangle = it.next();
-	 * 
-	 * rectangle.setBounds((int) (rectangles.get(rectangle).x * resizeFactorX),
-	 * rectangle.y, (int) (rectangles.get(rectangle).width * resizeFactorX),
-	 * rectangle.height); } System.out.println(rectangles); }
-	 * 
-	 * public void setResizingFactorY(int resizedHeight) {
-	 * 
-	 * double resizeFactorY = (double) oldHeight / (double) resizedHeight;
-	 * 
-	 * for (Iterator<Rectangle> it = this.rectangles.iterator(); it.hasNext();)
-	 * { Rectangle rectangle = it.next();
-	 * 
-	 * rectangle.setBounds(rectangle.x, (int) (rectangles.get(rectangle).y *
-	 * resizeFactorY), rectangle.width, (int) (rectangles.get(rectangle).height
-	 * * resizeFactorY));
-	 * 
-	 * } System.out.println(rectangles); }
-	 */
 
 	/**
 	 * Affiche l'etat des rectangles par rapport a l'ecran
@@ -192,18 +157,12 @@ public class ImageView extends Canvas implements Runnable {
 	 * Adapte les rectangles en fonction de la taille de la fenetre
 	 */
 	public void prepareRectangles() {
-		
-		//System.out.println(toString());
-		
 		preparedRectangles = new ArrayList<Rectangle>();
 		Rectangle preparedRectangle = null;
 
 		double resizeFactorX = (double) this.model.getImage().getWidth() / (double) this.getWidth();
 		double resizeFactorY = (double) this.model.getImage().getHeight() / (double) this.getHeight();
 		
-		//System.out.println("Resize factor x : " + resizeFactorX);
-		//System.out.println("Resize factor y : " + resizeFactorY);
-
 		for (Iterator<Rectangle> it = rectangles.iterator(); it.hasNext();) {
 			Rectangle rectangle = it.next();
 			preparedRectangle = new Rectangle();
@@ -212,7 +171,5 @@ public class ImageView extends Canvas implements Runnable {
 			
 			preparedRectangles.add(preparedRectangle);
 		}
-		
-		//System.out.println(preparedRectanglesToString());
 	}
 }
